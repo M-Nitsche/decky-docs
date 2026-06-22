@@ -81,6 +81,6 @@ Claude passes `master_id: "tmpl_xyz789"` to `create_deck` automatically.
 
 Go to **Templates** on the platform, find the template, and click **Delete**. Decks already generated with that template are not affected.
 
-{% hint style="info" %}
+<Info>
 If you delete a template that's referenced in an existing job, the job will fall back to the default Decky design for new slides.
-{% endhint %}
+</Info>

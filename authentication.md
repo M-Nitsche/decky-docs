@@ -37,9 +37,9 @@ API keys are long-lived credentials you include in every request as a bearer tok
 5. Select the scopes you need (see [Scopes](#scopes) below).
 6. Click **Create** and **copy the key immediately** — it starts with `dk_live_` and is only shown once.
 
-{% hint style="warning" %}
+<Warning>
 **Store it securely.** Treat your API key like a password. If you lose it, you'll need to create a new one. Decky never stores the plaintext key — only a hash.
-{% endhint %}
+</Warning>
 
 ### Using an API key
 
