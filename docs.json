@@ -1,0 +1,70 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Decky AI",
+  "colors": {
+    "primary": "#171717",
+    "light": "#171717",
+    "dark": "#f5f5f3"
+  },
+  "logo": {
+    "light": "https://platform.decky-ai.com/logo.svg",
+    "dark": "https://platform.decky-ai.com/logo.svg",
+    "href": "https://platform.decky-ai.com"
+  },
+  "favicon": "https://platform.decky-ai.com/logo.svg",
+  "topbar": {
+    "links": [
+      {
+        "name": "Dashboard",
+        "url": "https://platform.decky-ai.com"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "name": "Get started free",
+      "url": "https://platform.decky-ai.com"
+    }
+  },
+  "footer": {
+    "socials": {
+      "website": "https://decky-ai.com"
+    }
+  },
+  "navigation": {
+    "groups": [
+      {
+        "group": "Get Started",
+        "pages": ["index", "quickstart"]
+      },
+      {
+        "group": "Authentication",
+        "pages": ["authentication"]
+      },
+      {
+        "group": "Guides",
+        "pages": ["brand-templates", "credits-and-plans"]
+      },
+      {
+        "group": "Tool Reference",
+        "pages": [
+          "tools/index",
+          "tools/create-deck",
+          "tools/get-deck-status",
+          "tools/get-deck-download-url",
+          "tools/list-decks",
+          "tools/cancel-deck",
+          "tools/list-masters",
+          "tools/check-usage"
+        ]
+      },
+      {
+        "group": "Help",
+        "pages": ["troubleshooting"]
+      }
+    ]
+  },
+  "seo": {
+    "indexHiddenPages": false
+  }
+}
