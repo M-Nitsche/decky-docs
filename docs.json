@@ -20,13 +20,13 @@
     "links": [
       {
         "label": "Dashboard",
-        "href": "https://platform.decky-ai.com"
+        "href": "https://app.decky-ai.com"
       }
     ],
     "primary": {
       "type": "button",
       "label": "Get started free",
-      "href": "https://platform.decky-ai.com"
+      "href": "https://app.decky-ai.com"
     }
   },
   "footer": {
