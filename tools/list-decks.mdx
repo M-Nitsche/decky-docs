@@ -1,25 +1,23 @@
-# list\_decks
-
-List your recent deck generation jobs.
-
-**Type:** Read  
-**Required scope:** `decks:read`  
-**Credit cost:** Free
-
 ---
+title: "list_decks"
+description: "List your recent deck generation jobs, newest first."
+---
+
+<Info>
+**Type:** Read · **Required scope:** `decks:read` · **Cost:** Free
+</Info>
 
 ## Parameters
 
-| Parameter | Type | Required | Default | Description |
-|---|---|---|---|---|
-| `limit` | integer | No | 20 | Number of jobs to return. Range: 1–100. Jobs are returned newest first. |
-
----
+<ParamField path="limit" type="integer" default="20">
+  Number of jobs to return. Range: **1–100**. Jobs are returned newest first.
+</ParamField>
 
 ## Response
 
-Returns an array of job objects (same shape as `get_deck_status`):
+Returns an array of job objects (same shape as [`get_deck_status`](/tools/get-deck-status)).
 
+<Expandable title="Example response">
 ```json
 [
   {
@@ -43,8 +41,7 @@ Returns an array of job objects (same shape as `get_deck_status`):
   }
 ]
 ```
-
----
+</Expandable>
 
 ## Use cases
 

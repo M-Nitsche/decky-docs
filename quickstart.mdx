@@ -1,0 +1,140 @@
+---
+title: "Quickstart"
+description: "Connect Decky AI to your AI assistant in under 5 minutes. Pick the path that matches your client."
+---
+
+There are two ways to connect: **OAuth** (sign in through a browser, no API key) and **API key** (a token you paste into a config file). Choose the tab that matches your client.
+
+<Tabs>
+  <Tab title="Claude.ai web (OAuth)">
+    The fastest way to get started. Authentication happens through Decky's secure sign-in — no API key to copy or store.
+
+    <Steps>
+      <Step title="Open Claude connectors">
+        Go to [claude.ai/customize/connectors](https://claude.ai/customize/connectors) and click **Add custom connector**.
+      </Step>
+      <Step title="Enter the server URL">
+        ```text
+        https://mcp.decky-ai.com/mcp
+        ```
+        Click **Save**.
+      </Step>
+      <Step title="Sign in to Decky">
+        Claude redirects you to Decky's sign-in page. Use the same account as [platform.decky-ai.com](https://platform.decky-ai.com). If you don't have one, a free account is created automatically.
+      </Step>
+      <Step title="Generate a deck">
+        Start a conversation and ask:
+
+        > "Create a 10-slide deck about the future of electric vehicles, written for a general audience."
+
+        Claude calls `create_deck`, polls until the deck is ready (typically 3–10 minutes), then gives you a download link.
+      </Step>
+    </Steps>
+  </Tab>
+
+  <Tab title="Claude Desktop">
+    <Steps>
+      <Step title="Get your API key">
+        1. Go to [platform.decky-ai.com](https://platform.decky-ai.com) and sign in.
+        2. Open **API Keys** in the left sidebar.
+        3. Click **Create key**, name it (e.g. "Claude Desktop"), and click **Create**.
+        4. **Copy the key now** — it starts with `dk_live_` and is shown only once.
+      </Step>
+      <Step title="Edit the config file">
+        Open the Claude Desktop config file:
+
+        - **Mac:** `~/Library/Application Support/Claude/claude_desktop_config.json`
+        - **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
+
+        Add the `mcpServers` block (create the file if it doesn't exist):
+
+        ```json claude_desktop_config.json
+        {
+          "mcpServers": {
+            "decky-ai": {
+              "url": "https://mcp.decky-ai.com/mcp",
+              "headers": {
+                "Authorization": "Bearer dk_live_YOUR_KEY_HERE"
+              }
+            }
+          }
+        }
+        ```
+      </Step>
+      <Step title="Restart Claude Desktop">
+        Quit and reopen Claude Desktop. A tools icon appears in the chat input — click it to confirm Decky's tools are listed.
+      </Step>
+      <Step title="Generate a deck">
+        > "Create a 10-slide investor pitch for a B2B SaaS startup that reduces food waste."
+      </Step>
+    </Steps>
+  </Tab>
+
+  <Tab title="Claude Code">
+    <Steps>
+      <Step title="Get your API key">
+        Create one at [platform.decky-ai.com](https://platform.decky-ai.com) → **API Keys**. Copy it immediately.
+      </Step>
+      <Step title="Add the server">
+        ```bash
+        claude mcp add decky-ai --transport http https://mcp.decky-ai.com/mcp \
+          -H "Authorization: Bearer dk_live_YOUR_KEY_HERE"
+        ```
+      </Step>
+      <Step title="Verify the connection">
+        ```bash
+        claude mcp list
+        ```
+      </Step>
+    </Steps>
+  </Tab>
+
+  <Tab title="Cursor">
+    <Steps>
+      <Step title="Get your API key">
+        Create one at [platform.decky-ai.com](https://platform.decky-ai.com) → **API Keys**. Copy it immediately.
+      </Step>
+      <Step title="Configure MCP">
+        Open **Settings → MCP**, or edit `.cursor/mcp.json` in your project:
+
+        ```json .cursor/mcp.json
+        {
+          "mcpServers": {
+            "decky-ai": {
+              "url": "https://mcp.decky-ai.com/mcp",
+              "headers": {
+                "Authorization": "Bearer dk_live_YOUR_KEY_HERE"
+              }
+            }
+          }
+        }
+        ```
+      </Step>
+    </Steps>
+  </Tab>
+</Tabs>
+
+## What to expect
+
+| Phase | What happens |
+| --- | --- |
+| Immediately | `create_deck` queues the job and reserves credits |
+| 0–30 seconds | Job moves from `queued` to `running` |
+| 1–10 minutes | Slides generate one by one (progress shown) |
+| Done | Status becomes `succeeded`, download link available |
+| Download link | Expires after a few minutes — ask for a fresh one |
+| File storage | `.pptx` files are kept for 30 days |
+
+## Next steps
+
+<CardGroup cols={3}>
+  <Card title="Brand templates" icon="palette" href="/brand-templates">
+    Apply your company's colors, fonts, and layouts.
+  </Card>
+  <Card title="Credits & plans" icon="coins" href="/credits-and-plans">
+    Understand the credit model and plan tiers.
+  </Card>
+  <Card title="Tool reference" icon="wrench" href="/tools">
+    Everything the assistant can call.
+  </Card>
+</CardGroup>

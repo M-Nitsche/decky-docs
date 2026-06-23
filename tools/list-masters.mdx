@@ -1,0 +1,50 @@
+---
+title: "list_masters"
+description: "List your uploaded brand templates."
+---
+
+<Info>
+**Type:** Read · **Required scope:** `masters:read` · **Cost:** Free
+</Info>
+
+## Parameters
+
+None.
+
+## Response
+
+Returns an array of master template objects.
+
+<ResponseField name="id" type="string">
+  Pass this as `master_id` in [`create_deck`](/tools/create-deck) to use this template.
+</ResponseField>
+<ResponseField name="name" type="string">
+  The name you gave the template when uploading.
+</ResponseField>
+<ResponseField name="layouts" type="string[]">
+  The slide layout names detected in the template.
+</ResponseField>
+<ResponseField name="created_at" type="string">
+  When the template was uploaded.
+</ResponseField>
+
+<Expandable title="Example response">
+```json
+[
+  {
+    "id": "tmpl_xyz789",
+    "name": "Acme Corp Brand 2026",
+    "layouts": ["Title Slide", "Content", "Two Column", "Blank"],
+    "created_at": "2026-05-01T09:00:00Z"
+  }
+]
+```
+</Expandable>
+
+<Note>
+Templates are uploaded via the dashboard at [platform.decky-ai.com](https://platform.decky-ai.com) → **Templates** (max 3 per account). If the array is empty, Decky uses its default design.
+</Note>
+
+<Card title="Brand templates guide" icon="palette" href="/brand-templates" horizontal>
+  Full guide on uploading and using templates.
+</Card>

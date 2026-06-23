@@ -1,0 +1,47 @@
+---
+title: "check_usage"
+description: "Get your credit balance for the current billing period."
+---
+
+<Info>
+**Type:** Read · **Required scope:** `usage:read` · **Cost:** Free
+</Info>
+
+## Parameters
+
+None.
+
+## Response
+
+<ResponseField name="plan" type="string">
+  Your current plan ID (`free`, `starter`, `pro`, `enterprise`).
+</ResponseField>
+<ResponseField name="monthly_credits" type="integer">
+  Total credits allocated per billing period.
+</ResponseField>
+<ResponseField name="used" type="integer">
+  Credits consumed this period (settled charges only).
+</ResponseField>
+<ResponseField name="remaining" type="integer">
+  Credits still available.
+</ResponseField>
+<ResponseField name="period_end" type="string">
+  When the current billing period ends and credits reset.
+</ResponseField>
+
+<Expandable title="Example response">
+```json
+{
+  "plan": "pro",
+  "monthly_credits": 5000,
+  "used": 340,
+  "remaining": 4660,
+  "period_end": "2026-07-23T00:00:00Z",
+  "pricing": "10 credits per generated slide"
+}
+```
+</Expandable>
+
+<Note>
+`used` reflects settled charges only. A running job has credits reserved, but those aren't counted as `used` until the job completes. See [Credits & Plans](/credits-and-plans) for full details.
+</Note>

@@ -1,0 +1,100 @@
+---
+title: "create_deck"
+description: "Queue a PowerPoint deck generation job."
+---
+
+<Info>
+**Type:** Write · **Required scope:** `decks:write` · **Cost:** 10 credits per slide, reserved upfront. Unused credits are refunded automatically if the job produces fewer slides.
+</Info>
+
+## Parameters
+
+<ParamField path="prompt" type="string" required>
+  What the deck should be about — topic, audience, tone, structure, key facts. The more specific, the better the result.
+</ParamField>
+
+<ParamField path="slides" type="integer" required>
+  Number of slides to generate. Range: **1–40**.
+</ParamField>
+
+<ParamField path="master_id" type="string">
+  ID of an uploaded brand template (from [`list_masters`](/tools/list-masters)). Omit to use the default Decky design.
+</ParamField>
+
+## Response
+
+Returns a job object. Use the `id` to poll [`get_deck_status`](/tools/get-deck-status).
+
+<ResponseField name="id" type="string">
+  Unique job identifier.
+</ResponseField>
+<ResponseField name="status" type="string">
+  One of `queued`, `running`, `succeeded`, `failed`, `canceled`.
+</ResponseField>
+<ResponseField name="credits_reserved" type="integer">
+  Credits held for this job (10 × slides).
+</ResponseField>
+<ResponseField name="credits_charged" type="integer | null">
+  Final credits charged once the job settles. `null` while in progress.
+</ResponseField>
+
+<Expandable title="Example response">
+```json
+{
+  "id": "job_abc123",
+  "status": "queued",
+  "prompt": "10-slide investor pitch for a B2B SaaS startup...",
+  "master_id": null,
+  "slides_requested": 10,
+  "credits_reserved": 100,
+  "credits_charged": null,
+  "progress": null,
+  "error": null,
+  "created_at": "2026-06-23T10:00:00Z",
+  "finished_at": null
+}
+```
+</Expandable>
+
+## Job statuses
+
+| Status | Meaning |
+| --- | --- |
+| `queued` | Waiting to start |
+| `running` | Generation in progress |
+| `succeeded` | Deck is ready for download |
+| `failed` | Generation failed (see `error`) |
+| `canceled` | Canceled via `cancel_deck` |
+
+## Example prompts
+
+<CodeGroup>
+```text Detailed (best results)
+Create a 12-slide strategic pitch deck for Maven Labs, a B2B SaaS company
+that automates financial reporting for mid-market CFOs. Audience: Series B
+investors. Include: problem, solution, market size ($8B TAM), product demo
+slide, traction (3x YoY growth), team, and ask ($5M). Tone: confident,
+data-driven. Use charts and bullet points.
+```
+
+```text Short
+10-slide deck on the future of renewable energy
+```
+
+```text With a brand template
+Create a 15-slide product launch deck for our new enterprise security
+product. Use master_id "tmpl_xyz789". Audience: IT decision makers.
+```
+</CodeGroup>
+
+## Errors
+
+| Error | Cause | Fix |
+| --- | --- | --- |
+| `Insufficient credits` | Not enough credits for the slide count | Reduce slides or [upgrade](/credits-and-plans) |
+| `Too many active jobs` | You already have jobs queued or running | Wait or [`cancel_deck`](/tools/cancel-deck) |
+| `Unknown master_id` | The template ID doesn't exist on your account | Call [`list_masters`](/tools/list-masters) |
+
+<Note>
+Credits are reserved at submission time. If the job fails or is canceled, all reserved credits are refunded. Maximum 40 slides per job — for longer decks, create multiple jobs.
+</Note>

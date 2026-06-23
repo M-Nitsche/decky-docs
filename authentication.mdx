@@ -1,0 +1,136 @@
+---
+title: "Authentication"
+description: "Connect with OAuth (no API key) or a platform API key. Both resolve to the same scoped identity."
+---
+
+Decky AI's MCP server supports two authentication methods. Use whichever fits your client.
+
+<CardGroup cols={2}>
+  <Card title="OAuth — no API key" icon="shield-check" href="#oauth">
+    Sign in through a browser. Best for Claude.ai web.
+  </Card>
+  <Card title="API key" icon="key" href="#api-key">
+    A bearer token for desktop and CLI clients.
+  </Card>
+</CardGroup>
+
+## OAuth (no API key) [#oauth]
+
+**Supported clients:** Claude.ai web
+
+OAuth is the simplest option — you sign in once through a browser and Decky handles the rest. No API key to copy, store, or rotate.
+
+<Steps>
+  <Step title="Add the connector">
+    Add `https://mcp.decky-ai.com/mcp` as a custom connector in Claude.ai.
+  </Step>
+  <Step title="Authorize">
+    Claude redirects you to Decky's authorization page.
+  </Step>
+  <Step title="Sign in">
+    Sign in with your Decky account (Google or Microsoft).
+  </Step>
+  <Step title="Done">
+    Decky issues Claude a token — valid for the session and automatically refreshed. Claude can now call Decky tools on your behalf.
+  </Step>
+</Steps>
+
+<Tip>
+**To disconnect:** Go to [platform.decky-ai.com](https://platform.decky-ai.com) → **Connections**, find the app, and click **Disconnect**. This immediately revokes all tokens for that client.
+</Tip>
+
+## API Key [#api-key]
+
+**Supported clients:** Claude Desktop, Claude Code, Cursor, any HTTP MCP client
+
+API keys are long-lived credentials you include in every request as a bearer token. They suit desktop apps and automation.
+
+### Create an API key
+
+<Steps>
+  <Step title="Open the dashboard">
+    Sign in at [platform.decky-ai.com](https://platform.decky-ai.com) and go to **API Keys**.
+  </Step>
+  <Step title="Create the key">
+    Click **Create key**, enter a name (e.g. "Cursor — work laptop"), choose an expiry, and select the scopes you need.
+  </Step>
+  <Step title="Copy it immediately">
+    The key starts with `dk_live_` and is shown **only once**. Store it before closing the dialog.
+  </Step>
+</Steps>
+
+<Warning>
+**Store it securely.** Treat your API key like a password. If you lose it, you'll need to create a new one. Decky never stores the plaintext key — only a hash.
+</Warning>
+
+### Use an API key
+
+Include it as a bearer token in every request:
+
+```text
+Authorization: Bearer dk_live_YOUR_KEY_HERE
+```
+
+<CodeGroup>
+```json Claude Desktop
+{
+  "mcpServers": {
+    "decky-ai": {
+      "url": "https://mcp.decky-ai.com/mcp",
+      "headers": {
+        "Authorization": "Bearer dk_live_YOUR_KEY_HERE"
+      }
+    }
+  }
+}
+```
+
+```bash Claude Code
+claude mcp add decky-ai --transport http https://mcp.decky-ai.com/mcp \
+  -H "Authorization: Bearer dk_live_YOUR_KEY_HERE"
+```
+
+```json Cursor
+{
+  "mcpServers": {
+    "decky-ai": {
+      "url": "https://mcp.decky-ai.com/mcp",
+      "headers": {
+        "Authorization": "Bearer dk_live_YOUR_KEY_HERE"
+      }
+    }
+  }
+}
+```
+</CodeGroup>
+
+### Expiry & rotation
+
+Keys can expire after 30 days, 90 days, 1 year, or never. When a key expires, requests return `401 Unauthorized`. Create a new key and update your config before expiry. You can have up to **10 active API keys** at once.
+
+### Revoke a key
+
+Go to **API Keys** on the platform, find the key, and click **Revoke**. The key stops working immediately.
+
+## Scopes [#scopes]
+
+Scopes limit what an API key (or OAuth grant) is allowed to do. When in doubt, select all scopes — you can restrict later.
+
+| Scope | What it allows |
+| --- | --- |
+| `decks:write` | Create and cancel deck jobs |
+| `decks:read` | View job status, list jobs, download decks |
+| `masters:write` | Upload brand templates *(reserved — not yet exposed via MCP)* |
+| `masters:read` | List uploaded brand templates |
+| `usage:read` | Check credit balance and plan info |
+
+<Note>
+The default when creating a key is **all scopes**. For least-privilege setups (e.g. read-only monitoring), select only what you need.
+</Note>
+
+## Security notes
+
+- Keys are stored as SHA-256 hashes. The plaintext is never retrievable.
+- OAuth tokens are short-lived and automatically refreshed.
+- All connections are HTTPS only. The server rejects plain HTTP.
+- IP filtering is not currently supported at the API-key level; use scopes to restrict capabilities.

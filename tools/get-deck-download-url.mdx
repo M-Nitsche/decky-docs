@@ -1,0 +1,52 @@
+---
+title: "get_deck_download_url"
+description: "Get a short-lived download link for a finished deck."
+---
+
+<Info>
+**Type:** Read · **Required scope:** `decks:read` · **Cost:** Free
+</Info>
+
+## Parameters
+
+<ParamField path="job_id" type="string" required>
+  The job ID of a `succeeded` deck job.
+</ParamField>
+
+## Response
+
+<ResponseField name="download_url" type="string">
+  Direct HTTPS link to the `.pptx` file. Open it in a browser or pass it to a download tool.
+</ResponseField>
+<ResponseField name="expires_in_seconds" type="integer">
+  How long the link is valid. After it expires, call this tool again for a fresh link.
+</ResponseField>
+<ResponseField name="filename" type="string">
+  Suggested filename for saving the file.
+</ResponseField>
+
+<Expandable title="Example response">
+```json
+{
+  "download_url": "https://deckystorage.blob.core.windows.net/...",
+  "expires_in_seconds": 300,
+  "filename": "deck-job_abc123.pptx"
+}
+```
+</Expandable>
+
+<Warning>
+Links expire quickly (a few minutes). If you need to share the file later, download it first and share the local copy. This tool only works when `status` is `succeeded`.
+</Warning>
+
+<Note>
+Deck files are stored for **30 days** after generation. After that the file is deleted and cannot be recovered — you would need to regenerate the deck.
+</Note>
+
+## Errors
+
+| Error | Cause | Fix |
+| --- | --- | --- |
+| `Deck is not ready for download (status: 'running')` | Job hasn't finished | Poll [`get_deck_status`](/tools/get-deck-status) until `succeeded` |
+| `This deck has expired` | File deleted after 30 days | Create a new job with [`create_deck`](/tools/create-deck) |
+| `Deck job 'X' not found` | Invalid job ID | Call [`list_decks`](/tools/list-decks) |

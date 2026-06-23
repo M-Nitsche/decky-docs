@@ -16,17 +16,17 @@
     "light": "/images/logo_white.svg",
     "dark": "/images/logo_dark.svg"
   },
-  "topbar": {
+  "navbar": {
     "links": [
       {
-        "name": "Dashboard",
-        "url": "https://platform.decky-ai.com"
+        "label": "Dashboard",
+        "href": "https://platform.decky-ai.com"
       }
     ],
     "primary": {
       "type": "button",
-      "name": "Get started free",
-      "url": "https://platform.decky-ai.com"
+      "label": "Get started free",
+      "href": "https://platform.decky-ai.com"
     }
   },
   "footer": {

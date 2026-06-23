@@ -1,0 +1,83 @@
+---
+title: "Credits & Plans"
+description: "Decky meters deck generation with credits. Every generated slide costs 10 credits; read operations are always free."
+---
+
+Every generated slide costs **10 credits**. Read operations — checking status, downloading, listing — are always free.
+
+## How credits work
+
+<Steps>
+  <Step title="Credits are reserved upfront">
+    When you call `create_deck` with 10 slides, 100 credits (10 × 10) are immediately reserved from your balance.
+  </Step>
+  <Step title="Only finished slides are charged">
+    When the job completes, Decky charges only for the slides it actually produced. Make 9 instead of 10? You're charged 90 and 10 are refunded.
+  </Step>
+  <Step title="Canceled or failed jobs are fully refunded">
+    All reserved credits come back immediately.
+  </Step>
+  <Step title="Credits reset monthly">
+    Your full allocation is restored at the start of each billing period.
+  </Step>
+</Steps>
+
+### Example
+
+| Action | Reserved | Charged | Balance |
+| --- | --- | --- | --- |
+| Start: 500 remaining | — | — | 500 |
+| `create_deck` (10 slides) | 100 | — | 400 |
+| Job succeeds (10 slides) | — | 100 | 400 |
+| `create_deck` (5 slides) | 50 | — | 350 |
+| Job canceled | — | 0 (refunded) | 400 |
+
+## Plans
+
+| Plan | Monthly credits | Slides / month | Pricing |
+| --- | --- | --- | --- |
+| **Free** | 200 | ~20 | Free forever |
+| **Starter** | 2,000 | ~200 | Paid |
+| **Pro** | 5,000 | ~500 | Paid |
+| **Enterprise** | 50,000+ | ~5,000+ | Custom — contact sales |
+
+<Note>
+All paid plans are billed monthly. Unused credits **do not roll over** to the next period. Manage your subscription at [platform.decky-ai.com](https://platform.decky-ai.com).
+</Note>
+
+## Check your balance
+
+Ask Claude:
+
+> "How many credits do I have left?"
+
+Or call [`check_usage`](/tools/check-usage) directly. It returns your plan, total allocation, used amount, remaining balance, and period end date.
+
+## Running low on credits
+
+If you don't have enough credits for a job, `create_deck` returns:
+
+```text
+Insufficient credits: this job needs 100 (10 per slide) but only 40 remain
+in the current period on the 'free' plan.
+```
+
+<CardGroup cols={3}>
+  <Card title="Reduce slides" icon="minus">
+    Ask for fewer slides to fit your remaining balance.
+  </Card>
+  <Card title="Wait for reset" icon="clock">
+    Credits reset at the start of the next billing period.
+  </Card>
+  <Card title="Upgrade" icon="arrow-up" href="https://platform.decky-ai.com">
+    Move to a higher plan in **Billing**.
+  </Card>
+</CardGroup>
+
+## Enterprise
+
+For teams or high-volume use cases, the Enterprise plan offers a custom credit allocation, dedicated support, and volume pricing.
+
+<Card title="Contact sales" icon="building" href="https://platform.decky-ai.com" horizontal>
+  Discuss a custom Enterprise plan for your organization.
+</Card>
