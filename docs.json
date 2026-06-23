@@ -8,13 +8,13 @@
     "dark": "#f5f5f3"
   },
   "logo": {
-    "light": "/images/logo_white.svg",
-    "dark": "/images/logo_dark.svg",
+    "light": "/images/logo_dark.svg",
+    "dark": "/images/logo_white.svg",
     "href": "https://decky-ai.com"
   },
   "favicon": {
-    "light": "/images/logo_dark.svg",
-    "dark": "/images/logo_white.svg"
+    "light": "/images/logo_white.svg",
+    "dark": "/images/logo_dark.svg"
   },
   "topbar": {
     "links": [
