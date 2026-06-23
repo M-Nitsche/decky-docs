@@ -7,33 +7,71 @@ Decky AI's MCP server supports two authentication methods. Use whichever fits yo
 
 <CardGroup cols={2}>
   <Card title="OAuth — no API key" icon="shield-check" href="#oauth">
-    Sign in through a browser. Best for Claude.ai web.
+    Sign in through a browser. Works with Claude.ai web and Claude Desktop.
   </Card>
   <Card title="API key" icon="key" href="#api-key">
-    A bearer token for desktop and CLI clients.
+    A bearer token for CLI clients and advanced setups.
   </Card>
 </CardGroup>
 
 ## OAuth (no API key) [#oauth]
 
-**Supported clients:** Claude.ai web
+**Supported clients:** Claude.ai web, Claude Desktop
 
-OAuth is the simplest option — you sign in once through a browser and Decky handles the rest. No API key to copy, store, or rotate.
+OAuth is the recommended method — you sign in once through a browser and Decky handles the rest. No API key to copy, store, or rotate.
 
-<Steps>
-  <Step title="Add the connector">
-    Add `https://mcp.decky-ai.com/mcp` as a custom connector in Claude.ai.
-  </Step>
-  <Step title="Authorize">
-    Claude redirects you to Decky's authorization page.
-  </Step>
-  <Step title="Sign in">
-    Sign in with your Decky account (Google or Microsoft).
-  </Step>
-  <Step title="Done">
-    Decky issues Claude a token — valid for the session and automatically refreshed. Claude can now call Decky tools on your behalf.
-  </Step>
-</Steps>
+<Tabs>
+  <Tab title="Claude.ai web">
+    <Steps>
+      <Step title="Add the connector">
+        Go to [claude.ai/customize/connectors](https://claude.ai/customize/connectors) and click **Add custom connector**.
+      </Step>
+      <Step title="Enter the server URL">
+        ```text
+        https://mcp.decky-ai.com/mcp
+        ```
+        Click **Save**.
+      </Step>
+      <Step title="Authorize">
+        Claude redirects you to Decky's authorization page. Sign in with your Decky account (Google or Microsoft).
+      </Step>
+      <Step title="Done">
+        Decky issues Claude a token — valid for the session and automatically refreshed. Claude can now call Decky tools on your behalf.
+      </Step>
+    </Steps>
+  </Tab>
+  <Tab title="Claude Desktop">
+    <Steps>
+      <Step title="Edit the config file">
+        Open the Claude Desktop config file:
+
+        - **Mac:** `~/Library/Application Support/Claude/claude_desktop_config.json`
+        - **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
+
+        Add the `mcpServers` block — **no API key or auth headers needed**:
+
+        ```json claude_desktop_config.json
+        {
+          "mcpServers": {
+            "decky-ai": {
+              "url": "https://mcp.decky-ai.com/mcp"
+            }
+          }
+        }
+        ```
+      </Step>
+      <Step title="Restart Claude Desktop">
+        Quit and reopen Claude Desktop.
+      </Step>
+      <Step title="Authorize in the browser">
+        On first connection Claude Desktop opens a browser window. Sign in with your Decky account (Google or Microsoft) and click **Authorize**.
+      </Step>
+      <Step title="Done">
+        Decky issues a token that Claude Desktop stores and refreshes automatically. A tools icon appears in the chat input confirming Decky is connected.
+      </Step>
+    </Steps>
+  </Tab>
+</Tabs>
 
 <Tip>
 **To disconnect:** Go to [app.decky-ai.com](https://app.decky-ai.com) → **Connections**, find the app, and click **Disconnect**. This immediately revokes all tokens for that client.
@@ -41,9 +79,9 @@ OAuth is the simplest option — you sign in once through a browser and Decky ha
 
 ## API Key [#api-key]
 
-**Supported clients:** Claude Desktop, Claude Code, Cursor, any HTTP MCP client
+**Supported clients:** Claude Code, Cursor, any HTTP MCP client
 
-API keys are long-lived credentials you include in every request as a bearer token. They suit desktop apps and automation.
+API keys are long-lived credentials you include in every request as a bearer token. They suit CLI tools, automation, and any client that doesn't support the OAuth browser flow.
 
 ### Create an API key
 
@@ -72,19 +110,6 @@ Authorization: Bearer dk_live_YOUR_KEY_HERE
 ```
 
 <CodeGroup>
-```json Claude Desktop
-{
-  "mcpServers": {
-    "decky-ai": {
-      "url": "https://mcp.decky-ai.com/mcp",
-      "headers": {
-        "Authorization": "Bearer dk_live_YOUR_KEY_HERE"
-      }
-    }
-  }
-}
-```
-
 ```bash Claude Code
 claude mcp add decky-ai --transport http https://mcp.decky-ai.com/mcp \
   -H "Authorization: Bearer dk_live_YOUR_KEY_HERE"
