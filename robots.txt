@@ -1,0 +1,6 @@
+User-agent: *
+Disallow: /login
+Disallow: /mintlify-assets
+Content-Signal: ai-train=yes, search=yes, ai-input=yes
+
+Sitemap: https://docs.decky-ai.com/sitemap.xml
