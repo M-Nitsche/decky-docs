@@ -14,10 +14,10 @@ None.
 ## Response
 
 <ResponseField name="plan" type="string">
-  Your current plan ID (`free`, `starter`, `pro`, `enterprise`).
+  Your current plan ID (`free`, `starter`, `pro`, `max`, `enterprise`).
 </ResponseField>
 <ResponseField name="monthly_credits" type="integer">
-  Total credits allocated per billing period.
+  Credits allocated per month. Yearly plans also get this allowance every month.
 </ResponseField>
 <ResponseField name="used" type="integer">
   Credits consumed this period (settled charges only).
@@ -25,8 +25,8 @@ None.
 <ResponseField name="remaining" type="integer">
   Credits still available.
 </ResponseField>
-<ResponseField name="period_end" type="string">
-  When the current billing period ends and credits reset.
+<ResponseField name="period_end" type="string | null">
+  When the current billing period ends. `null` on the Free plan. On a monthly plan, this is also when credits reset. On a yearly plan, it is the end of the billing year, but credits still refresh every month.
 </ResponseField>
 
 <Expandable title="Example response">

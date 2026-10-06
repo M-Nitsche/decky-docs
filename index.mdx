@@ -2,9 +2,14 @@
 title: "Decky AI MCP Server"
 description: "Generate complete, professionally designed PowerPoint decks from a text brief — directly inside Claude, Cursor, and any MCP client."
 mode: "wide"
+tag: "Beta"
 ---
 
 Decky AI's MCP server turns any MCP-compatible AI assistant into a PowerPoint deck generator. Describe what you want in plain language and get back a polished `.pptx` file — no slides app required.
+
+<Warning>
+**The MCP server is in beta.** You can use it today, but tool names, parameters, response fields, and limits may change before general availability. If you build a custom integration on it, expect to adjust it. Found a bug or have feedback? Email [support@decky-ai.com](mailto:support@decky-ai.com).
+</Warning>
 
 <CardGroup cols={2}>
   <Card title="Quickstart" icon="rocket" href="/quickstart">
@@ -67,7 +72,7 @@ Generation takes a few minutes. Your AI client polls automatically — you just 
 | Client | Auth method | Best for |
 | --- | --- | --- |
 | Claude.ai web | OAuth — no API key | Quick start, non-developers |
-| Claude Desktop | API key | Regular desktop users |
+| Claude Desktop | OAuth — no API key | Regular desktop users |
 | Claude Code | API key | Developers / automation |
 | Cursor | API key | Developers |
 | Any MCP HTTP client | API key | Custom integrations |
