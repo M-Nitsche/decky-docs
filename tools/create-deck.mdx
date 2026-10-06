@@ -41,7 +41,7 @@ Returns a job object. Use the `id` to poll [`get_deck_status`](/tools/get-deck-s
 <Expandable title="Example response">
 ```json
 {
-  "id": "job_abc123",
+  "id": "3f6c2a1e-8b4d-4c7a-9e21-5d0f7b9a1c34",
   "status": "queued",
   "prompt": "10-slide investor pitch for a B2B SaaS startup...",
   "master_id": null,
@@ -83,7 +83,7 @@ data-driven. Use charts and bullet points.
 
 ```text With a brand template
 Create a 15-slide product launch deck for our new enterprise security
-product. Use master_id "tmpl_xyz789". Audience: IT decision makers.
+product. Use master_id "7c2e9b40-5d1a-4e6f-8a3b-0f4d6c2e9a57". Audience: IT decision makers.
 ```
 </CodeGroup>
 
@@ -92,7 +92,7 @@ product. Use master_id "tmpl_xyz789". Audience: IT decision makers.
 | Error | Cause | Fix |
 | --- | --- | --- |
 | `Insufficient credits` | Not enough credits for the slide count | Reduce slides or [upgrade](/credits-and-plans) |
-| `Too many active jobs` | You already have jobs queued or running | Wait or [`cancel_deck`](/tools/cancel-deck) |
+| `Too many active deck jobs` | You already have 5 jobs queued or running | Wait for one to finish, or [`cancel_deck`](/tools/cancel-deck) |
 | `Unknown master_id` | The template ID doesn't exist on your account | Call [`list_masters`](/tools/list-masters) |
 
 <Note>

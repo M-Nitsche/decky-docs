@@ -16,6 +16,10 @@
     "light": "/images/logo_white.svg",
     "dark": "/images/logo_dark.svg"
   },
+  "banner": {
+    "content": "The Decky AI MCP server is in **beta**. Tools, parameters, and limits may change. Feedback: [support@decky-ai.com](mailto:support@decky-ai.com)",
+    "dismissible": true
+  },
   "navbar": {
     "links": [
       {

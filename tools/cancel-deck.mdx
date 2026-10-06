@@ -20,7 +20,7 @@ Returns the updated job object with `status: "canceled"`. All reserved credits a
 <Expandable title="Example response">
 ```json
 {
-  "id": "job_abc123",
+  "id": "3f6c2a1e-8b4d-4c7a-9e21-5d0f7b9a1c34",
   "status": "canceled",
   "credits_reserved": 100,
   "credits_charged": 0,
@@ -33,7 +33,7 @@ Returns the updated job object with `status: "canceled"`. All reserved credits a
 You can cancel jobs in `queued` or `running` state. Jobs that are `succeeded`, `failed`, or already `canceled` cannot be canceled again.
 </Note>
 
-Useful when you've started too many jobs or want to free up your active job slots (there's a small concurrent-job limit per account).
+Useful when you've started too many jobs or want to free up your active job slots (each account can have up to 5 queued or running jobs at once).
 
 ## Errors
 
