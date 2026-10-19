@@ -20,7 +20,7 @@ flowchart TD
     L --> F[fill_templates<br/>fill them with your material]
     B --> C[get_deck_status<br/>poll every ~10s]
     F --> C
-    C -->|succeeded| D[get_deck_download_url<br/>.pptx link and Open in PowerPoint]
+    C -->|succeeded| D[get_deck_download_url<br/>.pptx download link]
     C -->|still running| C
 ```
 
