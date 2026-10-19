@@ -1,9 +1,9 @@
 ---
 title: "Tool Reference"
-description: "The 7 tools Decky AI exposes via MCP. Your assistant calls these automatically — you rarely call them by hand."
+description: "The 9 tools Decky AI exposes via MCP. Your assistant calls these automatically — you rarely call them by hand."
 ---
 
-Decky AI exposes 7 tools via MCP. Your AI assistant calls these automatically when you ask it to generate or manage decks.
+Decky AI exposes 9 tools via MCP. Your AI assistant calls these automatically when you ask it to generate or manage decks. The standard endpoint (`https://mcp.decky-ai.com/mcp`) and the [enterprise endpoint](/authentication#enterprise) (`https://mcp.decky-ai.com/enterprise/mcp`) offer the same tools.
 
 <Note>
 The MCP server is in **beta**. Tool names, parameters, and response fields may change before general availability.
@@ -11,11 +11,16 @@ The MCP server is in **beta**. Tool names, parameters, and response fields may c
 
 ## Typical workflow
 
+There are two ways to make a deck: let Decky write it with `create_deck`, or fill designed decks and slides from the [Decky slide library](/slide-library) with `fill_templates`.
+
 ```mermaid
 flowchart TD
-    A[list_masters<br/>optional: pick a template] --> B[create_deck<br/>start job, reserve credits]
+    A[list_masters<br/>pick a master] --> B[create_deck<br/>Decky writes the deck]
+    A --> L[search_library<br/>find library decks or slides]
+    L --> F[fill_templates<br/>fill them with your material]
     B --> C[get_deck_status<br/>poll every ~10s]
-    C -->|succeeded| D[get_deck_download_url<br/>get .pptx link]
+    F --> C
+    C -->|succeeded| D[get_deck_download_url<br/>.pptx link and Open in PowerPoint]
     C -->|still running| C
 ```
 
@@ -24,6 +29,12 @@ flowchart TD
 <CardGroup cols={2}>
   <Card title="create_deck" icon="plus" href="/tools/create-deck">
     Queue a PowerPoint deck generation job.
+  </Card>
+  <Card title="search_library" icon="layer-group" href="/tools/search-library">
+    Find designed slide templates and template decks.
+  </Card>
+  <Card title="fill_templates" icon="wand-magic-sparkles" href="/tools/fill-templates">
+    Fill a library deck or chosen templates with your material.
   </Card>
   <Card title="get_deck_status" icon="magnifying-glass" href="/tools/get-deck-status">
     Check status and progress of a job.
@@ -38,7 +49,7 @@ flowchart TD
     Cancel a queued or running job.
   </Card>
   <Card title="list_masters" icon="palette" href="/tools/list-masters">
-    List your uploaded brand templates.
+    List your masters, the built-in ones, and the default.
   </Card>
   <Card title="check_usage" icon="coins" href="/tools/check-usage">
     Check your credit balance and plan.
@@ -49,10 +60,16 @@ flowchart TD
 
 | Tool | Type | Required scope | Cost |
 | --- | --- | --- | --- |
-| [`create_deck`](/tools/create-deck) | Write | `decks:write` | 10 credits × slides |
+| [`create_deck`](/tools/create-deck) | Write | `decks:write` | 10 credits per slide built from scratch, 1 per library slide |
+| [`search_library`](/tools/search-library) | Read | `decks:read` | Free |
+| [`fill_templates`](/tools/fill-templates) | Write | `decks:write` | 1 credit × slides |
 | [`get_deck_status`](/tools/get-deck-status) | Read | `decks:read` | Free |
 | [`get_deck_download_url`](/tools/get-deck-download-url) | Read | `decks:read` | Free |
 | [`list_decks`](/tools/list-decks) | Read | `decks:read` | Free |
 | [`cancel_deck`](/tools/cancel-deck) | Write | `decks:write` | Free (credits refunded) |
 | [`list_masters`](/tools/list-masters) | Read | `masters:read` | Free |
 | [`check_usage`](/tools/check-usage) | Read | `usage:read` | Free |
+
+<Note>
+The server also has two helper tools, `get_library_slides` and `get_deck_previews`, that only the [interactive cards](/interactive-cards) call to load slide images. They are marked app-only, so clients that honor that keep them out of the assistant's tool list. They are not covered here.
+</Note>

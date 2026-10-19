@@ -28,6 +28,9 @@ None.
 <ResponseField name="period_end" type="string | null">
   When the current billing period ends. `null` on the Free plan. On a monthly plan, this is also when credits reset. On a yearly plan, it is the end of the billing year, but credits still refresh every month.
 </ResponseField>
+<ResponseField name="pricing" type="string">
+  What deck jobs cost, in words: slides built from scratch, slides built from a library template, and the assets Decky uses while writing a deck.
+</ResponseField>
 
 <Expandable title="Example response">
 ```json
@@ -37,7 +40,7 @@ None.
   "used": 340,
   "remaining": 4660,
   "period_end": "2026-07-23T00:00:00Z",
-  "pricing": "10 credits per generated slide"
+  "pricing": "10 credits per generated slide, 1 per slide built from a Decky library template, plus 20 per AI-generated image, 1 per icon and 1 per web search the agent uses"
 }
 ```
 </Expandable>

@@ -1,27 +1,43 @@
 ---
 title: "Authentication"
-description: "Connect with OAuth (no API key) or a platform API key. Both resolve to the same scoped identity."
+description: "Connect with OAuth (no API key), a platform API key, or a Microsoft work account. All resolve to the same scoped identity."
 ---
 
-Decky AI's MCP server supports two authentication methods. Use whichever fits your client.
+Decky AI's MCP server works with any MCP client, such as Claude, ChatGPT, VS Code, or Cursor. It supports two authentication methods. Use whichever fits your client.
 
-<CardGroup cols={2}>
+<CardGroup cols={3}>
   <Card title="OAuth — no API key" icon="shield-check" href="#oauth">
-    Sign in through a browser. Works with Claude.ai web and Claude Desktop.
+    Sign in through a browser. Works with any MCP client that supports OAuth.
   </Card>
   <Card title="API key" icon="key" href="#api-key">
     A bearer token for CLI clients and advanced setups.
   </Card>
+  <Card title="Work accounts" icon="building" href="#enterprise">
+    Sign in with your Microsoft work account (Decky Enterprise).
+  </Card>
 </CardGroup>
+
+## Endpoints
+
+| Endpoint | URL | Sign-in |
+| --- | --- | --- |
+| Standard | `https://mcp.decky-ai.com/mcp` | Your Decky account through OAuth, or an API key |
+| Enterprise | `https://mcp.decky-ai.com/enterprise/mcp` | A Microsoft work account through OAuth, for organizations set up for [Decky Enterprise](#enterprise) |
+
+Both endpoints offer the same [tools](/tools). A token issued for one endpoint is rejected by the other.
 
 ## OAuth (no API key) [#oauth]
 
-**Supported clients:** Claude.ai web, Claude Desktop
+**Supported clients:** any MCP client that supports OAuth. The Claude tabs below are Claude-specific; the last tab covers other clients.
 
 OAuth is the recommended method — you sign in once through a browser and Decky handles the rest. No API key to copy, store, or rotate.
 
+<Note>
+Signing in with a Microsoft work account from an organization with Decky Enterprise? Use the [enterprise endpoint](#enterprise) instead.
+</Note>
+
 <Tabs>
-  <Tab title="Claude.ai web">
+  <Tab title="Claude (claude.ai)">
     <Steps>
       <Step title="Add the connector">
         Go to [claude.ai/customize/connectors](https://claude.ai/customize/connectors) and click **Add custom connector**.
@@ -33,7 +49,7 @@ OAuth is the recommended method — you sign in once through a browser and Decky
         Click **Save**.
       </Step>
       <Step title="Authorize">
-        Claude redirects you to Decky's authorization page. Sign in with your Decky account (Google or Microsoft).
+        Claude redirects you to Decky's sign-in page. Sign in with your Decky account (Google or Microsoft), then click **Allow access** on the [consent screen](#consent-screen).
       </Step>
       <Step title="Done">
         Decky issues Claude a token — valid for the session and automatically refreshed. Claude can now call Decky tools on your behalf.
@@ -64,14 +80,42 @@ OAuth is the recommended method — you sign in once through a browser and Decky
         Quit and reopen Claude Desktop.
       </Step>
       <Step title="Authorize in the browser">
-        On first connection Claude Desktop opens a browser window. Sign in with your Decky account (Google or Microsoft) and click **Authorize**.
+        On first connection Claude Desktop opens a browser window. Sign in with your Decky account (Google or Microsoft) and click **Allow access** on the [consent screen](#consent-screen).
       </Step>
       <Step title="Done">
         Decky issues a token that Claude Desktop stores and refreshes automatically. A tools icon appears in the chat input confirming Decky is connected.
       </Step>
     </Steps>
   </Tab>
+  <Tab title="Other MCP clients">
+    <Steps>
+      <Step title="Add a remote MCP server">
+        In your client's MCP or connector settings, add a remote (HTTP) MCP server with this URL:
+        ```text
+        https://mcp.decky-ai.com/mcp
+        ```
+      </Step>
+      <Step title="Sign in">
+        On first connection your client opens Decky's sign-in page in a browser. Sign in with your Decky account and click **Allow access** on the [consent screen](#consent-screen).
+      </Step>
+      <Step title="Done">
+        Your client stores the token and refreshes it automatically. If your client doesn't support OAuth, use an [API key](#api-key) instead.
+      </Step>
+    </Steps>
+  </Tab>
 </Tabs>
+
+### The consent screen [#consent-screen]
+
+Before your MCP client gets access, Decky shows a consent page. It shows:
+
+- the connecting app's name, in the heading *"… wants to connect to your Decky account"*,
+- the account you are signed in as and, for [work accounts](#enterprise), your organization,
+- the permissions the app asks for, one line per [scope](#scopes),
+- the host that Decky sends you back to (**Redirects to**),
+- **Deny** and **Allow access**.
+
+For an app that runs locally on your computer, the page warns you to continue only if you started the connection yourself. If the app asks for lasting access, the page notes that the access stays active until you revoke it from your Decky dashboard.
 
 <Tip>
 **To disconnect:** Go to [app.decky-ai.com](https://app.decky-ai.com) → **Connected apps**, find the app, and click **Disconnect**. This immediately revokes all tokens for that client.
@@ -137,17 +181,75 @@ Keys can expire after 30 days, 90 days, 1 year, or never. When a key expires, re
 
 Go to **API Keys** on the platform, find the key, and click **Revoke**. The key stops working immediately.
 
+## Work accounts (Decky Enterprise) [#enterprise]
+
+Organizations with Decky Enterprise connect through a separate endpoint:
+
+```text
+https://mcp.decky-ai.com/enterprise/mcp
+```
+
+Users sign in with their **Microsoft work account**, so your organization's single sign-on, MFA, and Conditional Access apply. Tenants federated with Okta are forwarded to Okta. Personal Microsoft accounts can't sign in here.
+
+- **Your organization must be set up first.** Only organizations that Decky has enabled for Decky Enterprise can sign in. Anyone else sees *Your organisation isn't set up for Decky Enterprise*, with the organization's tenant ID. To set it up, contact your Decky contact or [hello@decky-ai.com](mailto:hello@decky-ai.com) and include that tenant ID.
+- **One account with the add-in.** You sign in to the same Decky account as in the Decky enterprise PowerPoint add-in. Plan, credits, masters, and decks are shared.
+- **Company masters.** [`list_masters`](/tools/list-masters#company-masters) lists your organization's company masters first, and decks use the organization's default master unless another is chosen.
+
+### Add the connector
+
+<Tabs>
+  <Tab title="Claude Team / Enterprise">
+    <Steps>
+      <Step title="Add the custom connector">
+        An owner adds a custom connector under **Admin settings → Connectors** with the URL `https://mcp.decky-ai.com/enterprise/mcp`. Otherwise, add it yourself under **Settings → Connectors**.
+      </Step>
+      <Step title="Connect and sign in">
+        Each user then connects the connector individually and signs in with their Microsoft work account when Claude asks.
+      </Step>
+    </Steps>
+  </Tab>
+  <Tab title="Microsoft Copilot Studio">
+    In your agent, go to **Tools → Add a tool → Model Context Protocol**. Use the URL `https://mcp.decky-ai.com/enterprise/mcp` and the authentication **OAuth 2.0 → Dynamic discovery**.
+  </Tab>
+  <Tab title="ChatGPT Enterprise">
+    Add an MCP connector with OAuth and the URL `https://mcp.decky-ai.com/enterprise/mcp`.
+  </Tab>
+</Tabs>
+
+### API keys for work accounts
+
+The enterprise endpoint doesn't accept API keys. A work account can create API keys on the dashboard like anyone else. They work on the standard endpoint, `https://mcp.decky-ai.com/mcp`, and act for the same organization: its company masters and enterprise data handling apply.
+
+If your organization's Decky Enterprise access is suspended, connected clients lose access within about a minute, and work-account API keys stop working.
+
+### Enterprise data handling [#enterprise-data-handling]
+
+A deck job gets enterprise data handling when it comes from a work account (signed in with Microsoft, or through an API key a work account created), or from a user on the Enterprise plan, however they connect. Its job object then shows `"enterprise": true`. For these jobs:
+
+- The AI models process the job **in your processing region**: the EU by default, or the US if you chose it. They run with **zero data retention and no data collection**.
+- The job is **never traced**. Requests to the enterprise endpoint aren't traced either.
+- If in-region processing isn't available, the job **fails and all its credits are refunded**, rather than being processed anywhere else.
+- The deck card never sends an enterprise deck to PowerPoint for the web. See [Open in PowerPoint](/interactive-cards#open-in-powerpoint).
+
+Work accounts also never get a brand generated from their email domain, so your company's domain is never looked up with a third party.
+
+<Note>
+The finished `.pptx` is stored for 30 days, like every deck, so you can download it.
+</Note>
+
 ## Scopes [#scopes]
 
 Scopes limit what an API key (or OAuth grant) is allowed to do. When in doubt, select all scopes — you can restrict later.
 
-| Scope | What it allows |
-| --- | --- |
-| `decks:write` | Create and cancel deck jobs |
-| `decks:read` | View job status, list jobs, download decks |
-| `masters:write` | Upload brand templates *(reserved — not yet exposed via MCP)* |
-| `masters:read` | List uploaded brand templates |
-| `usage:read` | Check credit balance and plan info |
+| Scope | What it allows | Tools |
+| --- | --- | --- |
+| `decks:write` | Create, fill, and cancel deck jobs | [`create_deck`](/tools/create-deck), [`fill_templates`](/tools/fill-templates), [`cancel_deck`](/tools/cancel-deck) |
+| `decks:read` | View job status, list jobs, download decks, search the slide library | [`get_deck_status`](/tools/get-deck-status), [`list_decks`](/tools/list-decks), [`get_deck_download_url`](/tools/get-deck-download-url), [`search_library`](/tools/search-library) |
+| `masters:write` | Upload brand templates *(reserved — not yet exposed via MCP)* | — |
+| `masters:read` | List master templates | [`list_masters`](/tools/list-masters) |
+| `usage:read` | Check credit balance and plan info | [`check_usage`](/tools/check-usage) |
+
+With OAuth, Decky's consent screen lists the scopes the client asks for before you authorize. A client that asks for none gets all five.
 
 <Note>
 The default when creating a key is **all scopes**. For least-privilege setups (e.g. read-only monitoring), select only what you need.

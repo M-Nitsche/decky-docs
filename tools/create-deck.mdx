@@ -4,13 +4,15 @@ description: "Queue a PowerPoint deck generation job."
 ---
 
 <Info>
-**Type:** Write · **Required scope:** `decks:write` · **Cost:** 10 credits per slide, reserved upfront. Unused credits are refunded automatically if the job produces fewer slides.
+**Type:** Write · **Required scope:** `decks:write` · **Cost:** 10 credits per slide built from scratch, 1 credit per slide built from a library template. Reserved upfront at 10 per slide; the difference and credits for slides that aren't produced are refunded automatically.
 </Info>
+
+Decky writes the whole deck from your brief. Where a slide from its [library of designed templates](/slide-library) fits, Decky builds that slide from the template. To fill a specific library deck or chosen templates instead, use [`fill_templates`](/tools/fill-templates).
 
 ## Parameters
 
 <ParamField path="prompt" type="string" required>
-  What the deck should be about — topic, audience, tone, structure, key facts. The more specific, the better the result.
+  What the deck should be about: topic, audience, tone, structure hints, key messages. The more specific, the better the result.
 </ParamField>
 
 <ParamField path="slides" type="integer" required>
@@ -18,7 +20,22 @@ description: "Queue a PowerPoint deck generation job."
 </ParamField>
 
 <ParamField path="master_id" type="string">
-  ID of an uploaded brand template (from [`list_masters`](/tools/list-masters)). Omit to use the default Decky design.
+  The master template (design) from [`list_masters`](/tools/list-masters). It can be:
+
+  - one of your uploaded masters,
+  - for [work accounts](/authentication#enterprise), one of your organization's company masters,
+  - one of Decky's built-in masters: Professional Blue, Graphite, Evergreen, Burgundy, or Petrol,
+  - a brand master that [`list_masters`](/tools/list-masters) lists in `builtin_masters`.
+
+  Omit it to use `default_master` from [`list_masters`](/tools/list-masters). For work accounts, that is the organization's default. Otherwise it is Decky's default, **Professional Blue**.
+</ParamField>
+
+<ParamField path="context" type="string">
+  Source material for the deck that the assistant extracted from the user's files (Excel, PDF, Word, notes): figures, tables as text, quotes, names, all verbatim. Up to **100,000 characters**. Decky quotes figures from it exactly and builds charts from its data. Decky never sees the files: the assistant reads them and passes what the deck needs.
+</ParamField>
+
+<ParamField path="use_library" type="boolean" default="true">
+  Let Decky build slides from its library of designed templates where one fits. Set it to `false` to build every slide from scratch.
 </ParamField>
 
 ## Response
@@ -28,8 +45,17 @@ Returns a job object. Use the `id` to poll [`get_deck_status`](/tools/get-deck-s
 <ResponseField name="id" type="string">
   Unique job identifier.
 </ResponseField>
+<ResponseField name="kind" type="string">
+  `generate` for `create_deck` jobs, `fill_templates` for [`fill_templates`](/tools/fill-templates) jobs.
+</ResponseField>
 <ResponseField name="status" type="string">
   One of `queued`, `running`, `succeeded`, `failed`, `canceled`.
+</ResponseField>
+<ResponseField name="master_id" type="string | null">
+  The master the job uses. `null` means Decky's default master.
+</ResponseField>
+<ResponseField name="master" type="string | null">
+  The master's name, such as `"Graphite (Decky built-in)"` or `"Professional Blue (Decky default)"`. `null` if the uploaded master has since been deleted.
 </ResponseField>
 <ResponseField name="credits_reserved" type="integer">
   Credits held for this job (10 × slides).
@@ -37,24 +63,51 @@ Returns a job object. Use the `id` to poll [`get_deck_status`](/tools/get-deck-s
 <ResponseField name="credits_charged" type="integer | null">
   Final credits charged once the job settles. `null` while in progress.
 </ResponseField>
+<ResponseField name="enterprise" type="boolean">
+  `true` when the job runs with [enterprise data handling](/authentication#enterprise-data-handling).
+</ResponseField>
+<ResponseField name="notice" type="string">
+  Present when there is something to tell the user about the master the deck uses. For example, that other built-in masters are available, or that the user has uploaded masters but none was chosen.
+</ResponseField>
 
 <Expandable title="Example response">
 ```json
 {
   "id": "3f6c2a1e-8b4d-4c7a-9e21-5d0f7b9a1c34",
+  "kind": "generate",
   "status": "queued",
   "prompt": "10-slide investor pitch for a B2B SaaS startup...",
   "master_id": null,
+  "master": "Professional Blue (Decky default)",
   "slides_requested": 10,
   "credits_reserved": 100,
   "credits_charged": null,
-  "progress": null,
+  "progress": {},
   "error": null,
   "created_at": "2026-06-23T10:00:00Z",
-  "finished_at": null
+  "finished_at": null,
+  "enterprise": false,
+  "notice": "This deck uses Decky's default master, Professional Blue. Tell the user that the built-in masters Graphite, Evergreen, Burgundy, Petrol are also available (list_masters), and that they can upload their own .pptx or .potx master on the Masters page at https://app.decky-ai.com for future decks."
 }
 ```
 </Expandable>
+
+<Note>
+In clients that show [interactive cards](/interactive-cards) (MCP Apps), such as claude.ai and Claude Desktop, the job appears as a live **deck card** with progress, a cancel button, and previews of the finished slides. See [Interactive cards](/interactive-cards#deck-card).
+</Note>
+
+## Credits
+
+Credits are reserved at 10 per slide when the job is created. When it finishes, Decky charges:
+
+- **10 credits** for each slide built from scratch,
+- **1 credit** for each slide built from a library template (`progress.library_slides`).
+
+The rest is refunded. For example, a 10-slide job reserves 100 credits. If 4 of its slides come from library templates, it is charged 6 × 10 + 4 × 1 = 64 credits and 36 are refunded. Failed or canceled jobs are refunded in full.
+
+<Note>
+AI-generated images, icons, and web searches that Decky uses while writing the deck are charged separately from the slide reservation: 20 credits per AI-generated image, 1 per icon, and 1 per web search. See [Credits & Plans](/credits-and-plans).
+</Note>
 
 ## Job statuses
 
@@ -66,7 +119,7 @@ Returns a job object. Use the `id` to poll [`get_deck_status`](/tools/get-deck-s
 | `failed` | Generation failed (see `error`) |
 | `canceled` | Canceled via `cancel_deck` |
 
-## Example prompts
+## Examples
 
 <CodeGroup>
 ```text Detailed (best results)
@@ -85,16 +138,29 @@ data-driven. Use charts and bullet points.
 Create a 15-slide product launch deck for our new enterprise security
 product. Use master_id "7c2e9b40-5d1a-4e6f-8a3b-0f4d6c2e9a57". Audience: IT decision makers.
 ```
+
+```json Direct call with source material
+{
+  "prompt": "8-slide quarterly business review for the leadership team. Tone: concise, data-driven.",
+  "slides": 8,
+  "master_id": "650c4d7c-dd61-53f1-8f04-5dcb45b6d6cd",
+  "context": "Revenue by quarter (€k): Q1 3,120 | Q2 3,580 | Q3 4,210\nChurn: 2.1% (Q2: 2.6%)\nCEO quote: \"Our best quarter yet.\"",
+  "use_library": true
+}
+```
 </CodeGroup>
 
 ## Errors
 
 | Error | Cause | Fix |
 | --- | --- | --- |
+| `prompt must not be empty.` | The prompt was blank | Describe the deck |
+| `slides must be between 1 and 40.` | Slide count out of range | For longer decks, create multiple jobs |
+| `context has N characters; the limit is 100000.` | Too much source material | Send the figures, tables, and quotes the deck needs, not whole documents |
 | `Insufficient credits` | Not enough credits for the slide count | Reduce slides or [upgrade](/credits-and-plans) |
 | `Too many active deck jobs` | You already have 5 jobs queued or running | Wait for one to finish, or [`cancel_deck`](/tools/cancel-deck) |
-| `Unknown master_id` | The template ID doesn't exist on your account | Call [`list_masters`](/tools/list-masters) |
+| `Unknown master_id` | The master isn't available to your account. The error lists your uploaded and built-in masters. | Call [`list_masters`](/tools/list-masters) |
 
 <Note>
-Credits are reserved at submission time. If the job fails or is canceled, all reserved credits are refunded. Maximum 40 slides per job — for longer decks, create multiple jobs.
+Credits are reserved at submission time. If the job fails or is canceled, all reserved credits are refunded. Maximum 40 slides per job. For longer decks, create multiple jobs.
 </Note>
