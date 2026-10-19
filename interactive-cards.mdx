@@ -10,7 +10,7 @@ MCP clients that support **MCP Apps**, such as claude.ai, Claude Desktop, ChatGP
     Shown with `search_library`: browse library decks and slides with previews, and pick what to fill.
   </Card>
   <Card title="Deck card" icon="file-powerpoint" href="#deck-card">
-    Shown with `create_deck` and `fill_templates`: live progress, cancel, previews of the finished slides, download, and Open in PowerPoint.
+    Shown with `create_deck` and `fill_templates`: live progress, cancel, previews of the finished slides, and download.
   </Card>
 </CardGroup>
 
@@ -47,7 +47,7 @@ The card checks the job every few seconds. When the deck finishes while the card
 
 **When the deck is done**, the card shows:
 
-- **Open in PowerPoint** and **Download .pptx**,
+- **Download .pptx**,
 - previews of the finished slides as built, when they were rendered. Open one to see it large and step through the deck.
 - for library fills: the **placeholders to confirm**, with their slide numbers, and what was **not in your material**. Slides with placeholders carry a *to confirm* chip.
 - skipped slides, slides left out of the storyline, and picture slots that kept the template's sample picture, with reasons,
@@ -58,31 +58,9 @@ If the job fails, the card shows the error and that reserved credits are refunde
 
 **Download .pptx** uses the chat's own download where it has one. Otherwise it opens the download link.
 
-## Open in PowerPoint [#open-in-powerpoint]
-
-The button tries these in order:
-
-<Steps>
-  <Step title="The PowerPoint desktop app">
-    The card asks the chat to open the deck in PowerPoint on your device. PowerPoint opens it for viewing; save a copy to keep and edit it.
-  </Step>
-  <Step title="Decky's hand-off page">
-    Some chats only open web links (claude.ai is one). Then the card opens a Decky page in your browser that opens PowerPoint from there. Your browser may ask whether to open PowerPoint: allow it. If nothing opens, or the device has no PowerPoint, the page offers **Download the deck**. Its links work for 5 minutes. After that, press **Open in PowerPoint** in the chat again.
-  </Step>
-  <Step title="PowerPoint for the web">
-    Under the buttons, *No PowerPoint on this device? Open it in PowerPoint for the web* opens the deck in Microsoft's online viewer. If the chat opens neither the app nor the hand-off page, the card opens PowerPoint for the web directly.
-  </Step>
-</Steps>
-
-<Warning>
-**Enterprise decks never go to PowerPoint for the web.** Microsoft's online viewer fetches the file from the download link, so decks made with [enterprise data handling](/authentication#enterprise-data-handling) only open in the desktop app or are downloaded. If the chat can't open PowerPoint, download the deck and open it on your device.
-</Warning>
-
 <Note>
 Decks open with the Decky PowerPoint add-in beside them. PowerPoint offers to add it if you don't have it yet. Enterprise decks don't carry this, since organizations deploy the add-in themselves.
 </Note>
-
-The hand-off page is the `open_in_powerpoint_url` that [`get_deck_download_url`](/tools/get-deck-download-url) returns. The download link travels in the page address's `#` fragment, which browsers never send to a server, and the page only opens Decky deck links.
 
 ## For integrators
 
