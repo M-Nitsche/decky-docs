@@ -1,0 +1,91 @@
+---
+title: "Slide Library"
+description: "Fill professionally designed slides and decks from the Decky library with your own material, at 1 credit per slide."
+---
+
+The Decky slide library holds professionally designed slide **templates** (KPIs, processes, timelines, matrices, comparisons, charts, agendas …) and template **decks** (whole storylines, such as a board review). It is the same library as in the Decky PowerPoint add-in.
+
+Slides built from the library cost **1 credit**, compared with 10 credits for a slide built from scratch.
+
+## Two ways to use it
+
+<CardGroup cols={2}>
+  <Card title="Let create_deck use it" icon="wand-magic-sparkles" href="/tools/create-deck">
+    `create_deck` builds slides from library templates on its own where one fits. Nothing to do: it's on by default (`use_library`).
+  </Card>
+  <Card title="Pick and fill" icon="layer-group" href="/tools/fill-templates">
+    Find a deck or single slides with `search_library`, choose them, and have Decky fill them with `fill_templates`.
+  </Card>
+</CardGroup>
+
+## Search, pick, fill
+
+<Steps>
+  <Step title="Ask for a deck or slides from the library">
+    > "Find a deck in the Decky library for our quarterly board review."
+
+    > "Show me Decky library slides for a five-step rollout plan and a KPI overview."
+
+    Your assistant calls [`search_library`](/tools/search-library). Each result comes with a thumbnail. In clients that show interactive cards, such as claude.ai and Claude Desktop, the results appear as a [library picker](/interactive-cards#library-picker) with slide previews.
+  </Step>
+  <Step title="Pick what to fill">
+    Choose a whole deck, and leave out slides you don't need, or pick single slides in the order you want them. In the picker, choosing doesn't spend credits: it sends your choice to your assistant.
+  </Step>
+  <Step title="Give your assistant your material">
+    Attach or paste your figures, tables, notes, and quotes. Your assistant reads them and passes what the slides need to Decky as `context`, up to 100,000 characters. Decky never sees the files themselves.
+  </Step>
+  <Step title="Decky fills the slides">
+    Your assistant calls [`fill_templates`](/tools/fill-templates). With a deck, Decky plans the storyline: it drops slides your material can't support and repeats a slide where needed (at most twice). Templates are filled in the order you picked. Every text slot is written from your material, charts use only real data from it, and picture slots get a picture from the Decky library. The slides are placed into your [master](/brand-templates).
+  </Step>
+  <Step title="Review what to confirm">
+    When the deck is done, your assistant tells you which facts are placeholders and what your material lacked, and gives you the download link. In clients that show interactive cards, the [deck card](/interactive-cards#deck-card) lists them next to previews of the finished slides.
+  </Step>
+</Steps>
+
+## "To confirm" placeholders
+
+Where a slide needs a number, name, date, or quote that your material doesn't give, Decky writes a visible placeholder on the slide instead of inventing one. The placeholder names what's missing:
+
+```text
+[€ m — to confirm]
+[client name — to confirm]
+[TBC]   (in short slots of 20 characters or fewer)
+```
+
+You find them in three places:
+
+| Where | What it shows |
+| --- | --- |
+| On the slide | The placeholder text itself, so you can't miss it in PowerPoint |
+| `progress.report.placeholders` in [`get_deck_status`](/tools/get-deck-status#fill-templates-report) | Each placeholder with its slide number, such as `slide 2 kpis[3].value: [€ m — to confirm]` |
+| `progress.report.gaps` | The facts the deck needs that the material did not give |
+
+To resolve them, replace the placeholders in PowerPoint. Or send your assistant the missing facts and fill the slides again. That is a new job and costs credits again.
+
+<Tip>
+Chart slides need real series data. A chart slide without usable data in your material is left out of a deck's storyline (`report.dropped`) or skipped (`report.skipped`). Include the numbers behind any chart you want.
+</Tip>
+
+## Credits
+
+| | Cost |
+| --- | --- |
+| [`search_library`](/tools/search-library) | Free |
+| [`fill_templates`](/tools/fill-templates) | **1 credit per slide**, reserved upfront for the most slides the job may have (`max_slides` for a deck, one per template). Slides that aren't produced are refunded. |
+| Library slides in [`create_deck`](/tools/create-deck) | **1 credit per slide** instead of 10. The job reserves 10 per slide and refunds the difference. |
+
+Failed or canceled jobs are refunded in full. If no slide can be filled at all, the job fails and is refunded. See [Credits & Plans](/credits-and-plans).
+
+## Limits
+
+| Limit | Value |
+| --- | --- |
+| Slides per `fill_templates` job | 20 |
+| Templates per job (`template_ids`) | 20, filled one slide each in the order given |
+| Repeats of one deck slide | At most twice |
+| Source material (`context`) | 100,000 characters |
+| Search results | Up to 10 per kind (templates, decks) |
+
+## Your own and your organization's decks
+
+Besides Decky's built-in decks, `search_library` lists your own library decks and, for [work accounts](/authentication#enterprise), your organization's shared decks. Only slides that are Decky templates can be filled: a deck's `fillable_slides` shows how many.

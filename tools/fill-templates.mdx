@@ -1,0 +1,157 @@
+---
+title: "fill_templates"
+description: "Fill a Decky library deck, or chosen library templates, with your material."
+---
+
+<Info>
+**Type:** Write · **Required scope:** `decks:write` · **Cost:** 1 credit per slide, reserved upfront. Credits for slides that aren't produced are refunded automatically.
+</Info>
+
+Fills a library deck or chosen library templates from [`search_library`](/tools/search-library) with your material. This is the "Fill with AI" of the Decky PowerPoint add-in. See the [Slide library guide](/slide-library) for the whole flow.
+
+## Parameters
+
+<ParamField path="prompt" type="string" required>
+  What the deck is for: audience, goal, key messages.
+</ParamField>
+
+<ParamField path="deck_id" type="string">
+  A library deck from [`search_library`](/tools/search-library) (`kind: "deck"`). Pass **either** `deck_id` **or** `template_ids`.
+</ParamField>
+
+<ParamField path="template_ids" type="string[]">
+  Library templates from [`search_library`](/tools/search-library) (`kind: "template"`). They are filled in this order, one slide each. Maximum: **20**. Duplicate ids are ignored.
+</ParamField>
+
+<ParamField path="exclude_member_ids" type="string[]">
+  With `deck_id`: the ids of the deck's slides to leave out.
+</ParamField>
+
+<ParamField path="context" type="string">
+  Source material that the assistant extracted from the user's files: figures, tables as text, quotes, all verbatim. Up to **100,000 characters**. Decky never sees the files themselves.
+</ParamField>
+
+<ParamField path="master_id" type="string">
+  The master (design) to place the slides into. It works the same as in [`create_deck`](/tools/create-deck#parameters). Omit it to use the default master.
+</ParamField>
+
+<ParamField path="max_slides" type="integer">
+  With `deck_id` only: the most slides the deck may have. Default: the deck's slides left after `exclude_member_ids`, at most 20. Range: 1 to twice that number, at most **20**. With `template_ids`, the job always has one slide per template.
+</ParamField>
+
+## What Decky does
+
+<Steps>
+  <Step title="Plans the slides">
+    **With a deck:** Decky plans the storyline over the deck's slides. It drops slides the material can't support and repeats a slide where needed (at most twice). **With templates:** they are filled in the order given.
+  </Step>
+  <Step title="Writes every slot">
+    Text comes from your `prompt` and `context`. Charts are filled only with real data from the context. Picture slots get a picture from the Decky library, or keep the template's sample picture.
+  </Step>
+  <Step title="Marks what's missing">
+    Where the material lacks a number, name, date, or quote, Decky writes a visible placeholder on the slide instead of inventing one, such as `[€ m — to confirm]` or `[client name — to confirm]`. Short slots get `[TBC]`.
+  </Step>
+  <Step title="Places the slides into the master">
+    The finished slides are placed into the chosen master, in order.
+  </Step>
+</Steps>
+
+When the job finishes, [`get_deck_status`](/tools/get-deck-status#fill-templates-report) returns `progress.report`. It lists the slides filled, slides skipped (for example, a chart slide without usable data), the placeholders to confirm, and the facts the material lacked. Pass these on to the user.
+
+<Warning>
+If no slide can be filled at all, the job fails and all reserved credits are refunded.
+</Warning>
+
+## Response
+
+Returns a job object with `kind: "fill_templates"`, the same shape as [`create_deck`](/tools/create-deck#response). Use the `id` to poll [`get_deck_status`](/tools/get-deck-status). It also includes:
+
+<ResponseField name="credits_reserved" type="integer">
+  Credits held for the job: 1 × `max_slides` for a deck, 1 × the number of templates for `template_ids`.
+</ResponseField>
+<ResponseField name="library" type="object">
+  What the job fills: `deck_id` and `exclude_member_ids`, or `template_ids`.
+</ResponseField>
+<ResponseField name="fills" type="object">
+  A readable summary. For a deck: `deck` (title), `deck_slides`, `excluded`, `max_slides`. For templates: `templates` (titles, in order) and `max_slides`.
+</ResponseField>
+<ResponseField name="notice" type="string">
+  Present when there is something to tell the user about the master the deck uses. For example, that the default was used although the user has uploaded masters.
+</ResponseField>
+
+<Expandable title="Example response">
+```json
+{
+  "id": "8b0e6d2c-41f7-4a9b-b3e5-7c1d9f2a6e40",
+  "kind": "fill_templates",
+  "status": "queued",
+  "prompt": "Q3 board review for Maven Labs. Audience: the board. Goal: approve the 2027 budget.",
+  "master_id": "650c4d7c-dd61-53f1-8f04-5dcb45b6d6cd",
+  "master": "Graphite (Decky built-in)",
+  "slides_requested": 12,
+  "credits_reserved": 12,
+  "credits_charged": null,
+  "progress": {},
+  "error": null,
+  "created_at": "2026-10-19T10:00:00Z",
+  "finished_at": null,
+  "enterprise": false,
+  "library": {
+    "deck_id": "a8c1e4f2-6b7d-4d3e-8a91-0f5b2c7e9d64",
+    "exclude_member_ids": ["c2d7a9e1-5f3b-4c8d-9e6a-1b4f7d2c8e05"]
+  },
+  "fills": {
+    "deck": "Board strategy review",
+    "deck_slides": 14,
+    "excluded": 1,
+    "max_slides": 12
+  }
+}
+```
+</Expandable>
+
+<Note>
+In clients that show [interactive cards](/interactive-cards) (MCP Apps), such as claude.ai and Claude Desktop, the job appears as a live **deck card** with progress, the placeholders to confirm, and previews of the finished slides. See [Interactive cards](/interactive-cards#deck-card).
+</Note>
+
+## Examples
+
+<CodeGroup>
+```json A library deck
+{
+  "prompt": "Q3 board review for Maven Labs. Audience: the board. Goal: approve the 2027 budget.",
+  "deck_id": "a8c1e4f2-6b7d-4d3e-8a91-0f5b2c7e9d64",
+  "exclude_member_ids": ["c2d7a9e1-5f3b-4c8d-9e6a-1b4f7d2c8e05"],
+  "context": "Revenue Q3: €4.2m (Q2: €3.6m). Gross margin: 61%. Headcount: 48 ...",
+  "max_slides": 12
+}
+```
+
+```json Chosen templates
+{
+  "prompt": "Two slides for the monthly sales review: KPIs and the five-step rollout plan.",
+  "template_ids": [
+    "5d2f8a61-3c4b-4e7a-9f10-2b6c8d4e1a73",
+    "9e4b1c7d-2a6f-4d8e-b5c3-0f7a1e9d2b68"
+  ],
+  "context": "New customers: 37. Pipeline: €1.9m. Win rate: 24% ..."
+}
+```
+</CodeGroup>
+
+## Errors
+
+| Error | Cause | Fix |
+| --- | --- | --- |
+| `Pass either deck_id … or template_ids …` | Both or neither were passed | Pass exactly one |
+| `Library deck 'X' not found` | Unknown deck id | Call [`search_library`](/tools/search-library) with `kind: "deck"` |
+| `Library deck '…' has no fillable template slides.` | The deck holds no template slides | Pick another deck |
+| `exclude_member_ids […] are not slides of this deck` | An id isn't one of the deck's slides | Use the slide ids the error lists |
+| `Every slide of the deck was excluded.` | Nothing left to fill | Exclude fewer slides |
+| `max_slides must be between 1 and N for this deck.` | `max_slides` out of range | Use a value in the range given |
+| `At most 20 template_ids per job.` | Too many templates | Split into several jobs |
+| `Not library templates: […]` | An id isn't a library template | Use ids from [`search_library`](/tools/search-library) with `kind: "template"` |
+| `context has N characters; the limit is 100000.` | Too much source material | Send the figures, tables, and quotes the deck needs, not whole documents |
+| `Unknown master_id` | The master isn't available to you | Call [`list_masters`](/tools/list-masters) |
+| `Insufficient credits` | Not enough credits for the slides | Fill fewer slides or [upgrade](/credits-and-plans) |
+| `Too many active deck jobs` | You already have 5 jobs queued or running | Wait for one to finish, or [`cancel_deck`](/tools/cancel-deck) |

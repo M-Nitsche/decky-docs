@@ -50,13 +50,15 @@
       },
       {
         "group": "Guides",
-        "pages": ["brand-templates", "credits-and-plans"]
+        "pages": ["brand-templates", "slide-library", "interactive-cards", "credits-and-plans"]
       },
       {
         "group": "Tool Reference",
         "pages": [
           "tools/index",
           "tools/create-deck",
+          "tools/search-library",
+          "tools/fill-templates",
           "tools/get-deck-status",
           "tools/get-deck-download-url",
           "tools/list-decks",

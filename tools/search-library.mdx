@@ -1,0 +1,124 @@
+---
+title: "search_library"
+description: "Search the Decky slide library for designed slide templates and template decks to fill with fill_templates."
+---
+
+<Info>
+**Type:** Read · **Required scope:** `decks:read` · **Cost:** Free
+</Info>
+
+Searches the [Decky slide library](/slide-library): professionally designed slide **templates** (KPIs, processes, timelines, matrices, comparisons, charts, agendas …) and template **decks** (whole storylines, such as a board review). Use it to show the user what fits, then pass a `deck_id` or `template_ids` to [`fill_templates`](/tools/fill-templates).
+
+<Tip>
+You don't need this tool for a normal deck. [`create_deck`](/tools/create-deck) already builds slides from library templates on its own where one fits.
+</Tip>
+
+## Parameters
+
+<ParamField path="query" type="string" required>
+  What the slide or deck should be: its form and purpose. For example `"budget vs actual by month"`, `"five-step process"`, or `"board strategy review"`.
+</ParamField>
+
+<ParamField path="kind" type="string" default="any">
+  `"template"` (single slides), `"deck"` (template decks), or `"any"` (both).
+</ParamField>
+
+<ParamField path="limit" type="integer" default="6">
+  Maximum results **per kind**. Range: **1–10**.
+</ParamField>
+
+<ParamField path="thumbnails" type="boolean" default="true">
+  Attach a small thumbnail image for each result.
+</ParamField>
+
+## What it searches
+
+| Kind | Where results come from | How they match |
+| --- | --- | --- |
+| `template` | Decky's built-in library of designed slide templates | By meaning and words of the query |
+| `deck` | Decky's built-in template decks, your own library decks, and, for [work accounts](/authentication#enterprise), your organization's shared decks | By the words of the query. With `kind: "deck"`, if no deck matches, the available decks are listed with a `note`. |
+
+Only template slides can be filled. A deck's `fillable_slides` tells you how many of its slides [`fill_templates`](/tools/fill-templates) can use.
+
+## Response
+
+The result is one JSON text block. When `thumbnails` is `true`, the available thumbnails follow it. Each thumbnail is a text line (`Thumbnail: template <id> — <title>` or `Thumbnail: deck <id> — <title>`) followed by a PNG image.
+
+<ResponseField name="results" type="object[]">
+  The matches. Each has a `kind`, `"template"` or `"deck"`.
+
+  <Expandable title="Template fields">
+    <ResponseField name="id" type="string">Pass it in `template_ids` to [`fill_templates`](/tools/fill-templates).</ResponseField>
+    <ResponseField name="title" type="string">The template's name.</ResponseField>
+    <ResponseField name="category" type="string | null">The template's category, such as `kpi`.</ResponseField>
+    <ResponseField name="usage" type="string">When to use the template.</ResponseField>
+    <ResponseField name="holds" type="string">What the template can hold: title length, text slots, repeating groups (with their minimum and maximum count), charts and pictures. A chart needs real data.</ResponseField>
+    <ResponseField name="similarity" type="number | null">How closely the template matches the query.</ResponseField>
+    <ResponseField name="preview_url" type="string | null">A link to a larger preview image. It works for one hour.</ResponseField>
+  </Expandable>
+
+  <Expandable title="Deck fields">
+    <ResponseField name="id" type="string">Pass it as `deck_id` to [`fill_templates`](/tools/fill-templates).</ResponseField>
+    <ResponseField name="title" type="string">The deck's name.</ResponseField>
+    <ResponseField name="about" type="string">What the deck is for.</ResponseField>
+    <ResponseField name="slides" type="integer">Number of slides in the deck.</ResponseField>
+    <ResponseField name="fillable_slides" type="integer">Number of those slides that are templates and can be filled.</ResponseField>
+    <ResponseField name="scope" type="string">`builtin` (Decky's library), `personal` (yours), or `org` (shared in your organization).</ResponseField>
+    <ResponseField name="note" type="string">Present when no deck matched the query and the available decks are listed instead.</ResponseField>
+    <ResponseField name="preview_url" type="string | null">For built-in decks: a link to the deck's thumbnail. It works for one hour.</ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="next" type="string">
+  What to do next: fill a deck or chosen templates (1 credit per slide), or build from scratch with `create_deck` when nothing fits.
+</ResponseField>
+
+<Expandable title="Example response (JSON block)">
+```json
+{
+  "results": [
+    {
+      "kind": "template",
+      "id": "5d2f8a61-3c4b-4e7a-9f10-2b6c8d4e1a73",
+      "title": "KPI overview with trend",
+      "category": "kpi",
+      "usage": "Four headline figures with a short trend chart for a monthly review.",
+      "holds": "title ≤ 60 chars, 2 text slot(s), kpis ×3–4, bar chart (needs real data)",
+      "similarity": 0.71,
+      "preview_url": "https://…"
+    },
+    {
+      "kind": "deck",
+      "id": "a8c1e4f2-6b7d-4d3e-8a91-0f5b2c7e9d64",
+      "title": "Board strategy review",
+      "about": "Storyline for a board meeting: context, performance, options, recommendation, next steps.",
+      "slides": 14,
+      "fillable_slides": 14,
+      "scope": "builtin",
+      "preview_url": "https://…"
+    }
+  ],
+  "next": "fill_templates(deck_id=…) fills a whole deck, fill_templates(template_ids=[…]) chosen templates — 1 credit per slide. Templates need real data for their charts."
+}
+```
+</Expandable>
+
+<Note>
+In clients that show [interactive cards](/interactive-cards) (MCP Apps), such as claude.ai and Claude Desktop, the result appears as an interactive **library picker** with slide previews. The user picks a deck or single slides there, and the assistant continues with `fill_templates`. See [Interactive cards](/interactive-cards#library-picker).
+</Note>
+
+## Example
+
+> "Show me template decks in the Decky library for a quarterly board review."
+
+The assistant calls:
+
+```json
+{ "query": "quarterly board review", "kind": "deck" }
+```
+
+## Errors
+
+| Error | Cause |
+| --- | --- |
+| `query must not be empty.` | The query was blank |

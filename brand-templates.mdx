@@ -3,7 +3,7 @@ title: "Brand Templates"
 description: "Upload your company's PowerPoint master so Decky generates decks in your brand — your colors, fonts, layouts, and logo."
 ---
 
-A master template (a `.pptx` master) defines the look of your slides: backgrounds, color palettes, fonts, logo placement, and available layouts. Decky reads this file when generating a deck and applies your brand design to every slide.
+A master template (a `.pptx` or `.potx` master) defines the look of your slides: backgrounds, color palettes, fonts, logo placement, and available layouts. Decky reads this file when generating a deck and applies your brand design to every slide.
 
 ## Upload a template
 
@@ -12,7 +12,7 @@ A master template (a `.pptx` master) defines the look of your slides: background
     Go to [app.decky-ai.com](https://app.decky-ai.com) and sign in.
   </Step>
   <Step title="Open Masters">
-    Click the **Masters** tab and choose your `.pptx` file.
+    Click the **Masters** tab and choose your `.pptx` or `.potx` file.
   </Step>
   <Step title="Wait for processing">
     Decky uploads the file and extracts the available layouts within a few seconds. The template takes the file's name, so rename the file first if you want a different name (e.g. `Acme Corp 2026.pptx`).
@@ -20,7 +20,7 @@ A master template (a `.pptx` master) defines the look of your slides: background
 </Steps>
 
 <Note>
-**Limits:** Up to 3 templates per account, 30 MB each. To add a new one when at the limit, delete an existing template first.
+**Limits:** Up to 10 templates per account, 30 MB each. To add a new one when at the limit, delete an existing template first.
 </Note>
 
 ### What makes a good master file?
@@ -44,15 +44,21 @@ A master template (a `.pptx` master) defines the look of your slides: background
 Not sure where to start? Any existing company presentation works — Decky will extract the design from it.
 </Tip>
 
+## No master of your own?
+
+Every deck follows a master. Without an upload, Decky offers five built-in masters, the same templates as in the Decky PowerPoint add-in: **Professional Blue** (the default), **Graphite**, **Evergreen**, **Burgundy**, and **Petrol**. [`list_masters`](/tools/list-masters#built-in-masters) lists them with their ids.
+
+[Work accounts](/authentication#enterprise) also see their organization's company masters, uploaded by its Decky admin in the add-in. Their decks use the organization's default master unless you choose another.
+
 ## Use a template when generating a deck
 
 <Tabs>
-  <Tab title="Via Claude (MCP)">
-    Ask Claude to list your templates first:
+  <Tab title="Via your assistant (MCP)">
+    Ask your assistant to list your templates first:
 
     > "What brand templates do I have available?"
 
-    Claude calls `list_masters` and returns something like:
+    It calls `list_masters` and returns something like:
 
     ```text
     You have 1 template:
@@ -63,7 +69,7 @@ Not sure where to start? Any existing company presentation works — Decky will 
 
     > "Create a 10-slide sales deck about our enterprise security product. Use the Acme Corp 2026 template."
 
-    Claude passes `master_id: "7c2e9b40-5d1a-4e6f-8a3b-0f4d6c2e9a57"` to `create_deck` automatically.
+    The assistant passes `master_id: "7c2e9b40-5d1a-4e6f-8a3b-0f4d6c2e9a57"` to `create_deck` automatically.
   </Tab>
   <Tab title="Via API (direct)">
     ```json

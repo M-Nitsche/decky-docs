@@ -1,9 +1,20 @@
 ---
 title: "Credits & Plans"
-description: "Decky meters deck generation with credits. Every generated slide costs 10 credits; read operations are always free."
+description: "Decky meters deck generation with credits. A slide built from scratch costs 10 credits, a slide built from a library template 1 credit; read operations are always free."
 ---
 
-Every generated slide costs **10 credits**. Read operations — checking status, downloading, listing — are always free.
+A slide Decky builds from scratch costs **10 credits**. A slide built from a [Decky library](/slide-library) template costs **1 credit**. Read operations — checking status, downloading, listing, searching the library — are always free.
+
+| What | Cost |
+| --- | --- |
+| Slide built from scratch ([`create_deck`](/tools/create-deck)) | 10 credits |
+| Slide built from a library template ([`create_deck`](/tools/create-deck) or [`fill_templates`](/tools/fill-templates)) | 1 credit |
+| AI-generated image that Decky uses in a deck | 20 credits |
+| Icon that Decky uses in a deck | 1 credit |
+| Web search that Decky runs while writing a deck | 1 credit |
+| Status, download, lists, library search, usage | Free |
+
+Images, icons, and web searches are charged when Decky uses them, separately from the slide reservation below. [`check_usage`](/tools/check-usage) returns the same prices in its `pricing` field.
 
 Your credit balance belongs to your Decky AI account, so it is shared with the Decky AI PowerPoint add-in.
 
@@ -11,10 +22,10 @@ Your credit balance belongs to your Decky AI account, so it is shared with the D
 
 <Steps>
   <Step title="Credits are reserved upfront">
-    When you call `create_deck` with 10 slides, 100 credits (10 × 10) are immediately reserved from your balance.
+    When you call `create_deck` with 10 slides, 100 credits (10 × 10) are immediately reserved from your balance. A `fill_templates` job reserves 1 credit per slide.
   </Step>
   <Step title="Only finished slides are charged">
-    When the job completes, Decky charges only for the slides it actually produced. Make 9 instead of 10? You're charged 90 and 10 are refunded.
+    When the job completes, Decky charges only for the slides it actually produced: 10 credits for each slide built from scratch, 1 credit for each slide built from a library template. Make 9 instead of 10? You're charged 90 and 10 are refunded. If 4 of the 10 came from library templates, you're charged 64 and 36 are refunded.
   </Step>
   <Step title="Canceled or failed jobs are fully refunded">
     All reserved credits come back immediately.
@@ -33,10 +44,14 @@ Your credit balance belongs to your Decky AI account, so it is shared with the D
 | Job succeeds (10 slides) | — | 100 | 400 |
 | `create_deck` (5 slides) | 50 | — | 350 |
 | Job canceled | — | 0 (refunded) | 400 |
+| `create_deck` (10 slides) | 100 | — | 300 |
+| Job succeeds (6 from scratch, 4 from the library) | — | 64 (36 refunded) | 336 |
+| `fill_templates` (12 slides) | 12 | — | 324 |
+| Job succeeds (11 slides filled, 1 skipped) | — | 11 (1 refunded) | 325 |
 
 ## Plans
 
-| Plan | Monthly credits | Slides / month | Pricing |
+| Plan | Monthly credits | Slides / month (from scratch) | Pricing |
 | --- | --- | --- | --- |
 | **Free** | 200 | ~20 | Free forever |
 | **Starter** | 2,000 | ~200 | Paid |
@@ -50,7 +65,7 @@ Paid plans are billed monthly or yearly. On either billing cycle, credits are al
 
 ## Check your balance
 
-Ask Claude:
+Ask your assistant:
 
 > "How many credits do I have left?"
 
@@ -62,12 +77,13 @@ If you don't have enough credits for a job, `create_deck` returns:
 
 ```text
 Insufficient credits: this job needs 100 (10 per slide) but only 40 remain
-in the current period on the 'free' plan.
+in the current period on the 'free' plan. Reduce the slide count or upgrade
+at https://app.decky-ai.com.
 ```
 
 <CardGroup cols={3}>
   <Card title="Reduce slides" icon="minus">
-    Ask for fewer slides to fit your remaining balance.
+    Ask for fewer slides to fit your remaining balance, or [fill library slides](/slide-library) at 1 credit each.
   </Card>
   <Card title="Wait for reset" icon="clock">
     Credits reset at the start of the next billing period.

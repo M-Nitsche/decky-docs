@@ -6,7 +6,7 @@ description: "Fixes for the most common connection, generation, and credit issue
 ## Connection issues
 
 <AccordionGroup>
-  <Accordion title="Claude says Decky tools are not available" icon="plug-circle-xmark">
+  <Accordion title="Your assistant says Decky tools are not available" icon="plug-circle-xmark">
     **Claude Desktop / Claude Code / Cursor:**
 
     1. Confirm the server URL is exactly `https://mcp.decky-ai.com/mcp` (no trailing slash).
@@ -19,6 +19,11 @@ description: "Fixes for the most common connection, generation, and credit issue
     1. Go to [claude.ai/customize/connectors](https://claude.ai/customize/connectors) and check the connector is listed as connected.
     2. If it shows an error, remove it and re-add `https://mcp.decky-ai.com/mcp`.
     3. Make sure you signed in to Decky with the same account as your platform account.
+
+    **Other MCP clients:**
+
+    1. Confirm the server URL is exactly `https://mcp.decky-ai.com/mcp` (or `https://mcp.decky-ai.com/enterprise/mcp` for [work accounts](/authentication#enterprise)).
+    2. Remove the server and add it again to sign in afresh, or check the API key header as above.
   </Accordion>
 
   <Accordion title="401 Unauthorized" icon="lock">
@@ -39,6 +44,37 @@ description: "Fixes for the most common connection, generation, and credit issue
   </Accordion>
 </AccordionGroup>
 
+## Work account (Decky Enterprise) issues
+
+<AccordionGroup>
+  <Accordion title="Your organisation isn't set up for Decky Enterprise" icon="building">
+    You signed in with a Microsoft work account from an organization that isn't set up for Decky Enterprise, or whose access is suspended. The page shows your organization's tenant ID.
+
+    - To set up your organization, contact your Decky contact or [hello@decky-ai.com](mailto:hello@decky-ai.com) and include the tenant ID.
+    - If you have a personal Decky account, connect `https://mcp.decky-ai.com/mcp` instead.
+  </Accordion>
+
+  <Accordion title="Microsoft error AADSTS50105 (user not assigned)" icon="user-lock">
+    Your organization requires users to be assigned to the "Decky AI" enterprise app in Microsoft Entra ID. Ask your Entra admin to assign you, or your group, to the app.
+  </Accordion>
+
+  <Accordion title="Microsoft asks for consent or admin approval" icon="user-shield">
+    Your organization hasn't approved the "Decky AI" app yet. An Entra admin of your organization grants consent once, for everyone, at:
+
+    ```text
+    https://login.microsoftonline.com/<tenant-id>/adminconsent?client_id=6502e5de-77b2-4f9b-a470-36a53aefd31c
+    ```
+  </Accordion>
+
+  <Accordion title="The enterprise endpoint rejects my API key" icon="key">
+    The enterprise endpoint (`https://mcp.decky-ai.com/enterprise/mcp`) only accepts a Microsoft work-account sign-in. API keys work on `https://mcp.decky-ai.com/mcp`. See [API keys for work accounts](/authentication#api-keys-for-work-accounts).
+  </Accordion>
+
+  <Accordion title="check_usage shows the Free plan on my work account" icon="coins">
+    Each user of your organization needs the Enterprise plan, which Decky assigns. Until then, an account that first connects through MCP starts on the Free plan. Ask your Decky contact to assign the Enterprise plan to your account.
+  </Accordion>
+</AccordionGroup>
+
 ## Generation issues
 
 <AccordionGroup>
@@ -52,7 +88,7 @@ description: "Fixes for the most common connection, generation, and credit issue
     | 20 | ~8–15 minutes |
     | 40 | up to ~25 minutes |
 
-    This is expected. Claude polls automatically — you don't need to keep the conversation open.
+    This is expected. Your assistant polls automatically — you don't need to keep the conversation open.
   </Accordion>
 
   <Accordion title="Job failed" icon="triangle-exclamation">
@@ -60,25 +96,64 @@ description: "Fixes for the most common connection, generation, and credit issue
 
     | Error message | Fix |
     | --- | --- |
-    | `Generation error: content policy` | The prompt was blocked. Rephrase it. |
-    | `Storage unavailable` | Transient issue. Retry with `create_deck`. |
-    | `Template processing failed` | The master file may be corrupted. Re-upload it from the dashboard. |
+    | `Master template not found` | The master was deleted while the job was waiting or running. Choose another master and create the deck again. |
+    | `Job exceeded 15 minute limit` | The job ran too long. Retry with fewer slides. |
+    | `Agent produced no slides` | Decky couldn't build any slide. Add detail to the prompt and retry. |
+    | `No slide could be filled (…)` | A [`fill_templates`](/tools/fill-templates) job filled no slide; the reasons follow in brackets. Send more material (real data for chart slides) or pick other templates. |
 
-    All credits from a failed job are refunded automatically.
+    Decky retries a failed job once before marking it `failed`. All credits from a failed job are refunded automatically.
   </Accordion>
 
   <Accordion title="The download link expired" icon="link-slash">
-    Download links are short-lived (a few minutes). Ask Claude for a fresh one:
+    Download links are short-lived (a few minutes). Ask your assistant for a fresh one:
 
     > "Can you give me a new download link for my deck?"
 
-    Claude calls [`get_deck_download_url`](/tools/get-deck-download-url) again with the same job ID.
+    It calls [`get_deck_download_url`](/tools/get-deck-download-url) again with the same job ID.
   </Accordion>
 
   <Accordion title="The deck file has expired" icon="calendar-xmark">
     Deck files are stored for **30 days**, then deleted. Regenerate:
 
     > "Regenerate the deck about [topic] — the old one expired."
+  </Accordion>
+
+  <Accordion title="A slide was skipped or left out" icon="forward">
+    For [`fill_templates`](/tools/fill-templates) jobs, [`get_deck_status`](/tools/get-deck-status#fill-templates-report) reports it in `progress.report`, and the deck card lists it under *skipped* or *left out of the storyline*:
+
+    - `skipped`: a slide that couldn't be filled, with the reason. The most common one is `no usable chart data (…)`: the slide has a chart, and your material had no real data for it.
+    - `dropped`: a slide of a library deck that Decky left out of the storyline because the material couldn't support it, with the reason.
+
+    Skipped slides aren't charged. To get the slide, send your assistant the missing data, such as the figures behind the chart, and fill it again.
+  </Accordion>
+
+  <Accordion title="The deck has “[… — to confirm]” placeholders" icon="circle-question">
+    Your material didn't give a fact the slide needs, so Decky wrote a visible placeholder instead of inventing it, such as `[€ m — to confirm]`, or `[TBC]` in short slots. `progress.report.placeholders` lists each one with its slide number, and `progress.report.gaps` lists the facts the material lacked. Replace them in PowerPoint, or send your assistant the facts and fill the slides again. See [“To confirm” placeholders](/slide-library#to-confirm-placeholders).
+  </Accordion>
+</AccordionGroup>
+
+## Interactive card issues
+
+<AccordionGroup>
+  <Accordion title="Open in PowerPoint does nothing" icon="file-powerpoint">
+    The card first asks the chat to open the PowerPoint app. Chats that only open web links, such as claude.ai, get Decky's hand-off page in your browser instead.
+
+    1. If your browser asks whether to open PowerPoint, allow it.
+    2. If nothing opens, or the device has no PowerPoint, click **Download the deck** on that page and open the file from your downloads.
+    3. If the page says *This link is incomplete or has expired*, its 5 minutes are up. Go back to the chat and press **Open in PowerPoint** again.
+    4. For non-enterprise decks, *Open it in PowerPoint for the web* under the buttons opens Microsoft's online viewer.
+
+    Enterprise decks never open in PowerPoint for the web. If the chat can't open PowerPoint, the card says so: download the deck and open it on your device. See [Open in PowerPoint](/interactive-cards#open-in-powerpoint).
+  </Accordion>
+
+  <Accordion title="The deck card stopped refreshing" icon="rotate">
+    The card stops checking the job after 30 minutes, or when it can't reach Decky several times in a row, and says *Stopped refreshing*. The job itself carries on. Ask your assistant for the status:
+
+    > "What's the status of my deck?"
+  </Accordion>
+
+  <Accordion title="The library picker says “Paste this into the chat”" icon="clipboard">
+    This chat can't take your choice from the card directly. Click **Copy** and paste the text into the chat; your assistant then has Decky fill the slides you picked.
   </Accordion>
 </AccordionGroup>
 
@@ -110,4 +185,4 @@ When you reach out, include:
 
 - The **job ID** (e.g. `3f6c2a1e-8b4d-4c7a-9e21-5d0f7b9a1c34`) if the issue is with a specific deck.
 - The **error message** you saw.
-- Which **client** you're using (Claude.ai web, Claude Desktop, Cursor, etc.).
+- Which **client** you're using (Claude.ai web, Claude Desktop, ChatGPT, VS Code, Cursor, etc.).

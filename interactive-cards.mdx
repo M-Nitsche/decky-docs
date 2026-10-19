@@ -1,0 +1,89 @@
+---
+title: "Interactive Cards"
+description: "In MCP clients that support MCP Apps, Decky shows a library picker and live deck cards inside the chat."
+---
+
+MCP clients that support **MCP Apps**, such as claude.ai, Claude Desktop, ChatGPT, and VS Code, show Decky's results as interactive cards inside the chat. There are two cards:
+
+<CardGroup cols={2}>
+  <Card title="Library picker" icon="layer-group" href="#library-picker">
+    Shown with `search_library`: browse library decks and slides with previews, and pick what to fill.
+  </Card>
+  <Card title="Deck card" icon="file-powerpoint" href="#deck-card">
+    Shown with `create_deck` and `fill_templates`: live progress, cancel, previews of the finished slides, download, and Open in PowerPoint.
+  </Card>
+</CardGroup>
+
+Clients without MCP Apps show the tools' text results instead. Those are complete, so nothing is lost: your assistant polls [`get_deck_status`](/tools/get-deck-status) and gives you the [download link](/tools/get-deck-download-url).
+
+## Library picker [#library-picker]
+
+When your assistant searches the [slide library](/slide-library), the results appear as slides, not as text.
+
+| Part | What it shows |
+| --- | --- |
+| **Decks** tab | Each template deck with its cover, a filmstrip of its slides, and its slide count. Your own decks are tagged **Yours**, and your organization's shared decks **Your organization**. |
+| **Single slides** tab | Each matching template as a thumbnail with its category |
+| Viewer | Any slide large, stepping through a deck. It can go fullscreen where the chat allows it. |
+
+**To use a deck,** click **Use this deck**. To leave slides out first, click **Browse slides**, switch off the slides you don't need, and use the rest. Slides that aren't templates are marked **Not fillable**.
+
+**To use single slides,** click them in the order you want them, then click **Use these** (or **Use this slide**). The bar shows how many slides you picked and their cost (1 credit per slide).
+
+Choosing doesn't spend credits by itself. The picker sends your choice into the chat as a message, such as *Fill the Decky library deck "Board strategy review" (deck_id: …) with my material.* Your assistant then reads your material and calls [`fill_templates`](/tools/fill-templates). If the chat can't take a message from the card, the picker shows the text with a **Copy** button: paste it into the chat yourself.
+
+## Deck card [#deck-card]
+
+Every [`create_deck`](/tools/create-deck) and [`fill_templates`](/tools/fill-templates) job appears as a deck card that keeps itself up to date.
+
+**While the deck is built**, the card shows:
+
+- the current step, such as *Waiting for a free worker*, *Building slides*, *Filling the slides*, or *Rendering the slide previews*,
+- a tile per slide that fills as slides are built (*4 of 10 slides built*), and how many came from the library,
+- the master and the credits reserved (*up to 100 credits*),
+- **Cancel**. It asks you to confirm (**Cancel and refund**), and reserved credits are refunded.
+
+The card checks the job every few seconds. When the deck finishes while the card is open, the card tells your assistant the result, including any placeholders to confirm, so it doesn't need to poll. After 30 minutes, or if it can't reach Decky, the card stops refreshing and says so. Then ask your assistant for the status.
+
+**When the deck is done**, the card shows:
+
+- **Open in PowerPoint** and **Download .pptx**,
+- previews of the finished slides as built, when they were rendered. Open one to see it large and step through the deck.
+- for library fills: the **placeholders to confirm**, with their slide numbers, and what was **not in your material**. Slides with placeholders carry a *to confirm* chip.
+- skipped slides, slides left out of the storyline, and picture slots that kept the template's sample picture, with reasons,
+- credit lines for third-party assets, such as *Logos by Logo.dev*,
+- the credits charged.
+
+If the job fails, the card shows the error and that reserved credits are refunded.
+
+**Download .pptx** uses the chat's own download where it has one. Otherwise it opens the download link.
+
+## Open in PowerPoint [#open-in-powerpoint]
+
+The button tries these in order:
+
+<Steps>
+  <Step title="The PowerPoint desktop app">
+    The card asks the chat to open the deck in PowerPoint on your device. PowerPoint opens it for viewing; save a copy to keep and edit it.
+  </Step>
+  <Step title="Decky's hand-off page">
+    Some chats only open web links (claude.ai is one). Then the card opens a Decky page in your browser that opens PowerPoint from there. Your browser may ask whether to open PowerPoint: allow it. If nothing opens, or the device has no PowerPoint, the page offers **Download the deck**. Its links work for 5 minutes. After that, press **Open in PowerPoint** in the chat again.
+  </Step>
+  <Step title="PowerPoint for the web">
+    Under the buttons, *No PowerPoint on this device? Open it in PowerPoint for the web* opens the deck in Microsoft's online viewer. If the chat opens neither the app nor the hand-off page, the card opens PowerPoint for the web directly.
+  </Step>
+</Steps>
+
+<Warning>
+**Enterprise decks never go to PowerPoint for the web.** Microsoft's online viewer fetches the file from the download link, so decks made with [enterprise data handling](/authentication#enterprise-data-handling) only open in the desktop app or are downloaded. If the chat can't open PowerPoint, download the deck and open it on your device.
+</Warning>
+
+<Note>
+Decks open with the Decky PowerPoint add-in beside them. PowerPoint offers to add it if you don't have it yet. Enterprise decks don't carry this, since organizations deploy the add-in themselves.
+</Note>
+
+The hand-off page is the `open_in_powerpoint_url` that [`get_deck_download_url`](/tools/get-deck-download-url) returns. The download link travels in the page address's `#` fragment, which browsers never send to a server, and the page only opens Decky deck links.
+
+## For integrators
+
+`search_library`, `create_deck`, and `fill_templates` declare their card in `_meta.ui.resourceUri` (`ui://decky/…`), served as `text/html;profile=mcp-app`. The cards load slide images through two helper tools marked app-only (`get_library_slides` and `get_deck_previews`), which the assistant doesn't need. `get_deck_status` has no card of its own: the deck card follows the job.
