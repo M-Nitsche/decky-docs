@@ -16,8 +16,7 @@ MCP clients that support **MCP Apps**, such as claude.ai, Claude Desktop, ChatGP
 
 Clients without MCP Apps show the tools' text results instead. Those are complete, so nothing is lost: your assistant polls [`get_deck_status`](/tools/get-deck-status) and gives you the [download link](/tools/get-deck-download-url).
 
-## Library picker [#library-picker]
-
+## Library picker
 When your assistant searches the [slide library](/slide-library), the results appear as slides, not as text.
 
 | Part | What it shows |
@@ -32,8 +31,7 @@ When your assistant searches the [slide library](/slide-library), the results ap
 
 Choosing doesn't spend credits by itself. The picker sends your choice into the chat as a message, such as *Fill the Decky library deck "Board strategy review" (deck_id: …) with my material.* Your assistant then reads your material and calls [`fill_templates`](/tools/fill-templates). If the chat can't take a message from the card, the picker shows the text with a **Copy** button: paste it into the chat yourself.
 
-## Deck card [#deck-card]
-
+## Deck card
 Every [`create_deck`](/tools/create-deck) and [`fill_templates`](/tools/fill-templates) job appears as a deck card that keeps itself up to date.
 
 **While the deck is built**, the card shows:

@@ -65,8 +65,7 @@ Returns the job object, the same shape as [`create_deck`](/tools/create-deck#res
 ```
 </Expandable>
 
-## Progress fields [#progress-fields]
-
+## Progress fields
 | Field | When | Meaning |
 | --- | --- | --- |
 | `stage` | Once running | `loading_template`, `generating_slides` (`create_deck`) or `filling_templates` (`fill_templates`), `finalizing`, `rendering_previews`, `done` |
@@ -74,12 +73,11 @@ Returns the job object, the same shape as [`create_deck`](/tools/create-deck#res
 | `target_slides` | Once running | Slides requested (for `fill_templates`, the most the deck may have) |
 | `library_slides` | When any slide comes from the library | How many of `slides_done` were built from library templates. They cost 1 credit each. |
 | `detail` | `fill_templates` | The current step, such as `planning the storyline` or `filling the slides` |
-| `report` | `fill_templates`, once the slides are filled | What was filled, skipped, and left to confirm. See [below](#fill-templates-report). |
+| `report` | `fill_templates`, once the slides are filled | What was filled, skipped, and left to confirm. See [below](#fill_templates-report). |
 | `preview_slides` | `succeeded` | How many slides have a rendered preview image. The [deck card](/interactive-cards#deck-card) shows them. |
 | `attributions` | `succeeded`, when present | Credit lines for third-party assets in the deck, such as `"Logos by Logo.dev"`. Pass them on to the user with the deck. |
 
-### fill_templates report [#fill-templates-report]
-
+### fill_templates report
 For `fill_templates` jobs, `progress.report` says what Decky did with the material. Pass the placeholders and gaps on to the user: they are the facts to confirm or supply.
 
 | Field | Meaning |

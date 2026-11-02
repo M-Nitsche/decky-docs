@@ -6,68 +6,75 @@ description: "Connect Decky AI to your AI assistant in under 5 minutes. Pick the
 There are two ways to connect: **OAuth** (sign in through a browser, no API key) and **API key** (a token you paste into a config file). Choose the tab that matches your client.
 
 <Note>
-Signing in with a Microsoft work account from an organization with Decky Enterprise? Use `https://mcp.decky-ai.com/enterprise/mcp` instead. See [Work accounts](/authentication#enterprise).
+Signing in with a Microsoft work account from an organization with Decky Enterprise? Use `https://mcp.decky-ai.com/enterprise/mcp` instead. See [Work accounts](/authentication#work-accounts-decky-enterprise).
 </Note>
 
 <Tabs>
-  <Tab title="Claude.ai web (OAuth)">
-    The fastest way to get started. Authentication happens through Decky's secure sign-in — no API key to copy or store.
+  <Tab title="Claude (web and desktop)">
+    The fastest way to get started: you sign in with your Decky account, so there is no API key to copy or store. Connectors belong to your Claude account, so you add Decky once and it is there on claude.ai and in the Claude desktop app.
 
     <Steps>
-      <Step title="Open Claude connectors">
-        Go to [claude.ai/customize/connectors](https://claude.ai/customize/connectors) and click **Add custom connector**.
+      <Step title="Open Connectors">
+        In Claude's sidebar, click **Customize**. On the **Connectors** tab, click **Add**, then **Add custom connector**. You can also go straight to [claude.ai/customize/connectors](https://claude.ai/customize/connectors).
+
+        <Frame>
+          <img src="/images/connect-claude/1-add-custom-connector.png" alt="Claude's Customize page on the Connectors tab, with Customize in the sidebar, the Add button and the Add custom connector menu item highlighted" />
+        </Frame>
       </Step>
-      <Step title="Enter the server URL">
+      <Step title="Enter the name and URL">
+        Enter `Decky AI` as the name and paste this as the MCP server URL, then click **Continue**:
+
         ```text
         https://mcp.decky-ai.com/mcp
         ```
-        Click **Save**.
+
+        <Frame>
+          <img src="/images/connect-claude/2-name-and-url.png" alt="The Add custom connector dialog with the name Decky AI and the URL https://mcp.decky-ai.com/mcp filled in, and the Continue button highlighted" />
+        </Frame>
+      </Step>
+      <Step title="Keep the detected settings">
+        Claude checks Decky's server and marks the right settings **Detected**: **Sign in now** and **Register automatically**. Change nothing, scroll to the bottom of the dialog, and click **Add**.
+
+        <Frame>
+          <img src="/images/connect-claude/3-detected-settings.png" width="460" alt="The second step of the dialog. Sign in now and Register automatically are selected and tagged Detected, and the Add button at the bottom is highlighted" />
+        </Frame>
       </Step>
       <Step title="Sign in to Decky">
-        Claude redirects you to Decky's sign-in page. Use the same account as [app.decky-ai.com](https://app.decky-ai.com). If you don't have one, a free account is created automatically. Then click **Allow access** on the [consent screen](/authentication#consent-screen).
+        Claude opens Decky's sign-in page. Use the same account as [app.decky-ai.com](https://app.decky-ai.com). If you don't have one, a free account is created automatically. Then click **Allow access** on the [consent screen](/authentication#the-consent-screen).
+
+        <Frame>
+          <img src="/images/connect-claude/4-allow-access.png" width="400" alt="Decky's consent page: Claude wants to connect to your Decky account, with the permissions listed and the Deny and Allow access buttons" />
+        </Frame>
+
+        If the sign-in page doesn't open, find **Decky AI** under **Customize → Connectors** and click **Connect**. Once you're connected, the connector's page shows **Disconnect**.
+      </Step>
+      <Step title="Check that Decky is on in your chat">
+        In a chat, click **+**, open **Connectors**, and check that the **Decky AI** switch is on. You can switch it on or off for each conversation.
+
+        <Frame>
+          <img src="/images/connect-claude/5-enable-in-chat.png" alt="The chat box with the plus menu open on Connectors, and the Decky AI switch turned on" />
+        </Frame>
       </Step>
       <Step title="Generate a deck">
-        Start a conversation and ask:
+        Ask for a deck in plain words:
 
-        > "Create a 10-slide deck about the future of electric vehicles, written for a general audience."
+        > "Create a 6-slide board strategy review for our lab network: where we stand, the options we weighed, our recommendation and the roadmap."
 
-        Claude calls `create_deck`, polls until the deck is ready (typically 3–10 minutes), then gives you a download link. In claude.ai, as in other clients that show interactive cards, the deck appears as a [live card](/interactive-cards#deck-card) with progress, previews of the finished slides, and **Download .pptx**.
+        Claude asks for your approval when it uses a Decky tool, then calls `create_deck`, which typically takes 3–10 minutes. The deck appears as a [live card](/interactive-cards#deck-card) with its progress, previews of the finished slides, and **Download .pptx**.
+
+        <Frame caption="An example of a finished deck card">
+          <img src="/images/connect-claude/6-deck-card.png" alt="A chat with the deck request and Decky's deck card below it, marked Ready, with a Download .pptx button and thumbnails of six slides" />
+        </Frame>
       </Step>
     </Steps>
-  </Tab>
 
-  <Tab title="Claude Desktop">
-    <Steps>
-      <Step title="Edit the config file">
-        Open the Claude Desktop config file:
+    <Note>
+    **Claude Team or Enterprise:** only an owner can add a custom connector. An owner adds Decky once under **Organization settings → Connectors**: click **Add**, hover over **Custom**, then select **Web**. Everyone else then finds **Decky AI** under **Customize → Connectors** and clicks **Connect**.
 
-        - **Mac:** `~/Library/Application Support/Claude/claude_desktop_config.json`
-        - **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
+    **Claude Free:** the plan allows one custom connector.
+    </Note>
 
-        Add the `mcpServers` block — **no API key needed**:
-
-        ```json claude_desktop_config.json
-        {
-          "mcpServers": {
-            "decky-ai": {
-              "url": "https://mcp.decky-ai.com/mcp"
-            }
-          }
-        }
-        ```
-      </Step>
-      <Step title="Restart Claude Desktop">
-        Quit and reopen Claude Desktop.
-      </Step>
-      <Step title="Authorize in the browser">
-        On first connection Claude Desktop opens a browser window. Sign in with your Decky account (Google or Microsoft) and click **Allow access**.
-      </Step>
-      <Step title="Generate a deck">
-        A tools icon appears in the chat input — Decky is connected. Ask:
-
-        > "Create a 10-slide investor pitch for a B2B SaaS startup that reduces food waste."
-      </Step>
-    </Steps>
+    The Claude screens above are recreated from claude.ai as of November 2026. If yours look different, [Anthropic's guide](https://support.claude.com/en/articles/11175166-get-started-with-custom-connectors-using-remote-mcp) has the current steps.
   </Tab>
 
   <Tab title="Claude Code">
