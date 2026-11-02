@@ -42,7 +42,7 @@ Slides built from the library cost **1 credit**, compared with 10 credits for a 
   </Step>
 </Steps>
 
-## "To confirm" placeholders
+## Placeholders to confirm
 
 Where a slide needs a number, name, date, or quote that your material doesn't give, Decky writes a visible placeholder on the slide instead of inventing one. The placeholder names what's missing:
 
@@ -57,7 +57,7 @@ You find them in three places:
 | Where | What it shows |
 | --- | --- |
 | On the slide | The placeholder text itself, so you can't miss it in PowerPoint |
-| `progress.report.placeholders` in [`get_deck_status`](/tools/get-deck-status#fill-templates-report) | Each placeholder with its slide number, such as `slide 2 kpis[3].value: [€ m — to confirm]` |
+| `progress.report.placeholders` in [`get_deck_status`](/tools/get-deck-status#fill_templates-report) | Each placeholder with its slide number, such as `slide 2 kpis[3].value: [€ m — to confirm]` |
 | `progress.report.gaps` | The facts the deck needs that the material did not give |
 
 To resolve them, replace the placeholders in PowerPoint. Or send your assistant the missing facts and fill the slides again. That is a new job and costs credits again.
@@ -88,4 +88,4 @@ Failed or canceled jobs are refunded in full. If no slide can be filled at all, 
 
 ## Your own and your organization's decks
 
-Besides Decky's built-in decks, `search_library` lists your own library decks and, for [work accounts](/authentication#enterprise), your organization's shared decks. Only slides that are Decky templates can be filled: a deck's `fillable_slides` shows how many.
+Besides Decky's built-in decks, `search_library` lists your own library decks and, for [work accounts](/authentication#work-accounts-decky-enterprise), your organization's shared decks. Only slides that are Decky templates can be filled: a deck's `fillable_slides` shows how many.

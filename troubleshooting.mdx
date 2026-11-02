@@ -7,23 +7,29 @@ description: "Fixes for the most common connection, generation, and credit issue
 
 <AccordionGroup>
   <Accordion title="Your assistant says Decky tools are not available" icon="plug-circle-xmark">
-    **Claude Desktop / Claude Code / Cursor:**
+    **Claude (web and desktop):**
+
+    1. Go to [claude.ai/customize/connectors](https://claude.ai/customize/connectors), open **Decky AI**, and check that the page shows **Disconnect**. If it shows **Connect**, click it and sign in.
+    2. In your chat, click **+**, open **Connectors**, and check that the **Decky AI** switch is on.
+    3. If the connector shows an error, remove it and add `https://mcp.decky-ai.com/mcp` again, as in the [Quickstart](/quickstart).
+    4. Make sure you signed in to Decky with the same account as your platform account.
+
+    **Claude Code / Cursor:**
 
     1. Confirm the server URL is exactly `https://mcp.decky-ai.com/mcp` (no trailing slash).
     2. Check the `Authorization` header is `Bearer dk_live_YOUR_KEY` (not `Token`, not `API-Key`).
-    3. Restart Claude Desktop (quit fully, reopen).
-    4. In Claude Desktop, click the tools icon to inspect connected tools. If Decky isn't listed, the config file has a syntax error — validate it at [jsonlint.com](https://jsonlint.com).
-
-    **Claude.ai web:**
-
-    1. Go to [claude.ai/customize/connectors](https://claude.ai/customize/connectors) and check the connector is listed as connected.
-    2. If it shows an error, remove it and re-add `https://mcp.decky-ai.com/mcp`.
-    3. Make sure you signed in to Decky with the same account as your platform account.
+    3. If you use a config file, check it for syntax errors at [jsonlint.com](https://jsonlint.com).
 
     **Other MCP clients:**
 
-    1. Confirm the server URL is exactly `https://mcp.decky-ai.com/mcp` (or `https://mcp.decky-ai.com/enterprise/mcp` for [work accounts](/authentication#enterprise)).
+    1. Confirm the server URL is exactly `https://mcp.decky-ai.com/mcp` (or `https://mcp.decky-ai.com/enterprise/mcp` for [work accounts](/authentication#work-accounts-decky-enterprise)).
     2. Remove the server and add it again to sign in afresh, or check the API key header as above.
+  </Accordion>
+
+  <Accordion title="A connector with this URL already exists in your organization" icon="clone">
+    Claude shows this when you add `https://mcp.decky-ai.com/mcp` and your Claude account or organization already has it. **Continue** stays disabled.
+
+    Cancel the dialog and use the existing connector: find it under **Customize → Connectors** on the **Yours** tab and click **Connect** if it isn't connected yet. To add it again from the start, remove the existing one first.
   </Accordion>
 
   <Accordion title="401 Unauthorized" icon="lock">
@@ -119,7 +125,7 @@ description: "Fixes for the most common connection, generation, and credit issue
   </Accordion>
 
   <Accordion title="A slide was skipped or left out" icon="forward">
-    For [`fill_templates`](/tools/fill-templates) jobs, [`get_deck_status`](/tools/get-deck-status#fill-templates-report) reports it in `progress.report`, and the deck card lists it under *skipped* or *left out of the storyline*:
+    For [`fill_templates`](/tools/fill-templates) jobs, [`get_deck_status`](/tools/get-deck-status#fill_templates-report) reports it in `progress.report`, and the deck card lists it under *skipped* or *left out of the storyline*:
 
     - `skipped`: a slide that couldn't be filled, with the reason. The most common one is `no usable chart data (…)`: the slide has a chart, and your material had no real data for it.
     - `dropped`: a slide of a library deck that Decky left out of the storyline because the material couldn't support it, with the reason.
@@ -128,7 +134,7 @@ description: "Fixes for the most common connection, generation, and credit issue
   </Accordion>
 
   <Accordion title="The deck has “[… — to confirm]” placeholders" icon="circle-question">
-    Your material didn't give a fact the slide needs, so Decky wrote a visible placeholder instead of inventing it, such as `[€ m — to confirm]`, or `[TBC]` in short slots. `progress.report.placeholders` lists each one with its slide number, and `progress.report.gaps` lists the facts the material lacked. Replace them in PowerPoint, or send your assistant the facts and fill the slides again. See [“To confirm” placeholders](/slide-library#to-confirm-placeholders).
+    Your material didn't give a fact the slide needs, so Decky wrote a visible placeholder instead of inventing it, such as `[€ m — to confirm]`, or `[TBC]` in short slots. `progress.report.placeholders` lists each one with its slide number, and `progress.report.gaps` lists the facts the material lacked. Replace them in PowerPoint, or send your assistant the facts and fill the slides again. See [“To confirm” placeholders](/slide-library#placeholders-to-confirm).
   </Accordion>
 </AccordionGroup>
 

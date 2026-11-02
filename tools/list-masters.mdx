@@ -7,7 +7,7 @@ description: "List the master templates (designs) available to your decks, and t
 **Type:** Read · **Required scope:** `masters:read` · **Cost:** Free
 </Info>
 
-Every deck follows a master template. This tool lists your uploaded masters, Decky's built-in masters (for [work accounts](/authentication#enterprise), led by the organization's company masters), and the default that [`create_deck`](/tools/create-deck) and [`fill_templates`](/tools/fill-templates) use when they get no `master_id`.
+Every deck follows a master template. This tool lists your uploaded masters, Decky's built-in masters (for [work accounts](/authentication#work-accounts-decky-enterprise), led by the organization's company masters), and the default that [`create_deck`](/tools/create-deck) and [`fill_templates`](/tools/fill-templates) use when they get no `master_id`.
 
 ## Parameters
 
@@ -96,8 +96,7 @@ None.
 The other four built-in masters follow Professional Blue; they are left out here for brevity.
 </Expandable>
 
-## Built-in masters [#built-in-masters]
-
+## Built-in masters
 Available to everyone. They are the same templates as in the Decky PowerPoint add-in.
 
 | Name | `id` | Look |
@@ -108,9 +107,8 @@ Available to everyone. They are the same templates as in the Decky PowerPoint ad
 | Burgundy | `96c1a026-7c59-5b6f-a5d3-c6ede0b3e2c4` | Wine red and warm gold for law, finance and M&A, Garamond headings, Arial body |
 | Petrol | `41d94896-fd9a-5a58-b8eb-ef6cbc06e961` | Deep petrol and aqua for digital and technology advisory, Calibri throughout |
 
-## Company masters (work accounts) [#company-masters]
-
-A [work account](/authentication#enterprise) sees its organization's masters ahead of the built-ins: the company masters its Decky admin uploaded in the add-in (up to 10 per organization), then the organization's brand master if the admin manages one. Without a `master_id`, the organization's decks use its first company master, else its brand master, else Professional Blue. This matches the default in the Decky PowerPoint add-in.
+## Company masters (work accounts)
+A [work account](/authentication#work-accounts-decky-enterprise) sees its organization's masters ahead of the built-ins: the company masters its Decky admin uploaded in the add-in (up to 10 per organization), then the organization's brand master if the admin manages one. Without a `master_id`, the organization's decks use its first company master, else its brand master, else Professional Blue. This matches the default in the Decky PowerPoint add-in.
 
 <Note>
 You upload your own masters on the dashboard at [app.decky-ai.com](https://app.decky-ai.com) → **Masters**, as `.pptx` or `.potx` (up to 10 per account, 30 MB each).
