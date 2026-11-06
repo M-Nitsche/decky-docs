@@ -4,7 +4,7 @@ description: "Queue a PowerPoint deck generation job."
 ---
 
 <Info>
-**Type:** Write · **Required scope:** `decks:write` · **Cost:** 10 credits per slide built from scratch, 1 credit per slide built from a library template. Reserved upfront at 10 per slide; the difference and credits for slides that aren't produced are refunded automatically.
+**Type:** Write · **Required scope:** `decks:write` · **Cost:** 10 credits per slide, built from scratch or from a library template. Reserved upfront; credits for slides that aren't produced are refunded automatically.
 </Info>
 
 Decky writes the whole deck from your brief. Where a slide from its [library of designed templates](/slide-library) fits, Decky builds that slide from the template. To fill a specific library deck or chosen templates instead, use [`fill_templates`](/tools/fill-templates).
@@ -98,12 +98,7 @@ In clients that show [interactive cards](/interactive-cards) (MCP Apps), such as
 
 ## Credits
 
-Credits are reserved at 10 per slide when the job is created. When it finishes, Decky charges:
-
-- **10 credits** for each slide built from scratch,
-- **1 credit** for each slide built from a library template (`progress.library_slides`).
-
-The rest is refunded. For example, a 10-slide job reserves 100 credits. If 4 of its slides come from library templates, it is charged 6 × 10 + 4 × 1 = 64 credits and 36 are refunded. Failed or canceled jobs are refunded in full.
+Credits are reserved at 10 per slide when the job is created. When it finishes, Decky charges **10 credits** for each slide it produced, whether built from scratch or from a library template (`progress.library_slides` counts those), and refunds the rest. For example, a 10-slide job reserves 100 credits. If it makes 9 slides, it is charged 90 and 10 are refunded. Failed or canceled jobs are refunded in full.
 
 <Note>
 AI-generated images, icons, and web searches that Decky uses while writing the deck are charged separately from the slide reservation: 20 credits per AI-generated image, 1 per icon, and 1 per web search. See [Credits & Plans](/credits-and-plans).

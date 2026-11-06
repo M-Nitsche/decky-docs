@@ -12,7 +12,7 @@ description: "Fixes for the most common connection, generation, and credit issue
     1. Go to [claude.ai/customize/connectors](https://claude.ai/customize/connectors), open **Decky AI**, and check that the page shows **Disconnect**. If it shows **Connect**, click it and sign in.
     2. In your chat, click **+**, open **Connectors**, and check that the **Decky AI** switch is on.
     3. If the connector shows an error, remove it and add `https://mcp.decky-ai.com/mcp` again, as in the [Quickstart](/quickstart).
-    4. Make sure you signed in to Decky with the same account as your platform account.
+    4. Make sure you signed in to Decky with the same account as on the dashboard.
 
     **Claude Code / Cursor:**
 
@@ -35,7 +35,7 @@ description: "Fixes for the most common connection, generation, and credit issue
   <Accordion title="401 Unauthorized" icon="lock">
     Your API key is invalid, expired, or revoked.
 
-    1. Go to [app.decky-ai.com](https://app.decky-ai.com) → **API Keys**.
+    1. Go to [app.decky-ai.com](https://app.decky-ai.com) → **API keys**.
     2. Check whether the key is listed and not revoked.
     3. If it's expired or revoked, create a new key and update your config.
     4. Keys are shown only once at creation — if you lost it, create a new one.
@@ -44,7 +44,7 @@ description: "Fixes for the most common connection, generation, and credit issue
   <Accordion title="Your API key does not have the '…' scope" icon="shield-halved">
     Your key was created without the scope needed for the operation.
 
-    1. Go to **API Keys** on the platform.
+    1. Go to **API keys** on the dashboard.
     2. The existing key cannot have scopes added — revoke it and create a new one with all needed scopes.
     3. The default "all scopes" option includes everything.
   </Accordion>

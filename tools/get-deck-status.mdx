@@ -71,7 +71,7 @@ Returns the job object, the same shape as [`create_deck`](/tools/create-deck#res
 | `stage` | Once running | `loading_template`, `generating_slides` (`create_deck`) or `filling_templates` (`fill_templates`), `finalizing`, `rendering_previews`, `done` |
 | `slides_done` | Once running | Slides finished so far. When the job succeeds, the number of slides in the deck. |
 | `target_slides` | Once running | Slides requested (for `fill_templates`, the most the deck may have) |
-| `library_slides` | When any slide comes from the library | How many of `slides_done` were built from library templates. They cost 1 credit each. |
+| `library_slides` | When any slide comes from the library | How many of `slides_done` were built from library templates. They cost 10 credits each, as other slides do. |
 | `detail` | `fill_templates` | The current step, such as `planning the storyline` or `filling the slides` |
 | `report` | `fill_templates`, once the slides are filled | What was filled, skipped, and left to confirm. See [below](#fill_templates-report). |
 | `preview_slides` | `succeeded` | How many slides have a rendered preview image. The [deck card](/interactive-cards#deck-card) shows them. |
@@ -100,8 +100,8 @@ For `fill_templates` jobs, `progress.report` says what Decky did with the materi
   "master_id": "650c4d7c-dd61-53f1-8f04-5dcb45b6d6cd",
   "master": "Graphite (Decky built-in)",
   "slides_requested": 12,
-  "credits_reserved": 12,
-  "credits_charged": 11,
+  "credits_reserved": 120,
+  "credits_charged": 110,
   "progress": {
     "stage": "done",
     "slides_done": 11,
