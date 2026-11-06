@@ -70,7 +70,7 @@ The result is one JSON text block. When `thumbnails` is `true`, the available th
 </ResponseField>
 
 <ResponseField name="next" type="string">
-  What to do next: fill a deck or chosen templates (1 credit per slide), or build from scratch with `create_deck` when nothing fits.
+  What to do next: fill a deck or chosen templates (10 credits per slide), or build from scratch with `create_deck` when nothing fits.
 </ResponseField>
 
 <Expandable title="Example response (JSON block)">
@@ -98,7 +98,7 @@ The result is one JSON text block. When `thumbnails` is `true`, the available th
       "preview_url": "https://…"
     }
   ],
-  "next": "fill_templates(deck_id=…) fills a whole deck, fill_templates(template_ids=[…]) chosen templates — 1 credit per slide. Templates need real data for their charts."
+  "next": "fill_templates(deck_id=…) fills a whole deck, fill_templates(template_ids=[…]) chosen templates, 10 credits per slide. Templates need real data for their charts."
 }
 ```
 </Expandable>

@@ -1,14 +1,13 @@
 ---
 title: "Credits & Plans"
-description: "Decky meters deck generation with credits. A slide built from scratch costs 10 credits, a slide built from a library template 1 credit; read operations are always free."
+description: "Decky meters deck generation with credits. Every slide Decky makes costs 10 credits, built from scratch or from a library template; read operations are always free."
 ---
 
-A slide Decky builds from scratch costs **10 credits**. A slide built from a [Decky library](/slide-library) template costs **1 credit**. Read operations — checking status, downloading, listing, searching the library — are always free.
+Every slide Decky makes costs **10 credits**, whether it builds the slide from scratch or from a [Decky library](/slide-library) template. Read operations (checking status, downloading, listing, searching the library) are always free.
 
 | What | Cost |
 | --- | --- |
-| Slide built from scratch ([`create_deck`](/tools/create-deck)) | 10 credits |
-| Slide built from a library template ([`create_deck`](/tools/create-deck) or [`fill_templates`](/tools/fill-templates)) | 1 credit |
+| Slide built from scratch or from a library template ([`create_deck`](/tools/create-deck) or [`fill_templates`](/tools/fill-templates)) | 10 credits |
 | AI-generated image that Decky uses in a deck | 20 credits |
 | Icon that Decky uses in a deck | 1 credit |
 | Web search that Decky runs while writing a deck | 1 credit |
@@ -16,16 +15,16 @@ A slide Decky builds from scratch costs **10 credits**. A slide built from a [De
 
 Images, icons, and web searches are charged when Decky uses them, separately from the slide reservation below. [`check_usage`](/tools/check-usage) returns the same prices in its `pricing` field.
 
-Your credit balance belongs to your Decky AI account, so it is shared with the Decky AI PowerPoint add-in.
+Your credit balance belongs to your Decky AI account, so it is shared with the Decky AI PowerPoint add-in. The [Decky Library](/slide-library#own-the-decky-library) is a separate one-time purchase; the prices on this page apply with or without it.
 
 ## How credits work
 
 <Steps>
   <Step title="Credits are reserved upfront">
-    When you call `create_deck` with 10 slides, 100 credits (10 × 10) are immediately reserved from your balance. A `fill_templates` job reserves 1 credit per slide.
+    When you call `create_deck` with 10 slides, 100 credits (10 × 10) are immediately reserved from your balance. A `fill_templates` job reserves 10 credits for each slide it may fill.
   </Step>
   <Step title="Only finished slides are charged">
-    When the job completes, Decky charges only for the slides it actually produced: 10 credits for each slide built from scratch, 1 credit for each slide built from a library template. Make 9 instead of 10? You're charged 90 and 10 are refunded. If 4 of the 10 came from library templates, you're charged 64 and 36 are refunded.
+    When the job completes, Decky charges 10 credits for each slide it actually produced, from scratch or from a library template, and refunds the rest. Make 9 instead of 10? You're charged 90 and 10 are refunded.
   </Step>
   <Step title="Canceled or failed jobs are fully refunded">
     All reserved credits come back immediately.
@@ -39,19 +38,17 @@ Your credit balance belongs to your Decky AI account, so it is shared with the D
 
 | Action | Reserved | Charged | Balance |
 | --- | --- | --- | --- |
-| Start: 500 remaining | — | — | 500 |
-| `create_deck` (10 slides) | 100 | — | 400 |
-| Job succeeds (10 slides) | — | 100 | 400 |
-| `create_deck` (5 slides) | 50 | — | 350 |
-| Job canceled | — | 0 (refunded) | 400 |
-| `create_deck` (10 slides) | 100 | — | 300 |
-| Job succeeds (6 from scratch, 4 from the library) | — | 64 (36 refunded) | 336 |
-| `fill_templates` (12 slides) | 12 | — | 324 |
-| Job succeeds (11 slides filled, 1 skipped) | — | 11 (1 refunded) | 325 |
+| Start: 500 remaining | | | 500 |
+| `create_deck` (10 slides) | 100 | | 400 |
+| Job succeeds (10 slides) | | 100 | 400 |
+| `create_deck` (5 slides) | 50 | | 350 |
+| Job canceled | | 0 (refunded) | 400 |
+| `fill_templates` (12 slides) | 120 | | 280 |
+| Job succeeds (11 slides filled, 1 skipped) | | 110 (10 refunded) | 290 |
 
 ## Plans
 
-| Plan | Monthly credits | Slides / month (from scratch) | Pricing |
+| Plan | Monthly credits | Slides / month | Pricing |
 | --- | --- | --- | --- |
 | **Free** | 200 | ~20 | Free forever |
 | **Starter** | 2,000 | ~200 | Paid |
@@ -83,7 +80,7 @@ at https://app.decky-ai.com.
 
 <CardGroup cols={3}>
   <Card title="Reduce slides" icon="minus">
-    Ask for fewer slides to fit your remaining balance, or [fill library slides](/slide-library) at 1 credit each.
+    Ask for fewer slides to fit your remaining balance.
   </Card>
   <Card title="Wait for reset" icon="clock">
     Credits reset at the start of the next billing period.

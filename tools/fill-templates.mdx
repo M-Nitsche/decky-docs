@@ -4,7 +4,7 @@ description: "Fill a Decky library deck, or chosen library templates, with your 
 ---
 
 <Info>
-**Type:** Write · **Required scope:** `decks:write` · **Cost:** 1 credit per slide, reserved upfront. Credits for slides that aren't produced are refunded automatically.
+**Type:** Write · **Required scope:** `decks:write` · **Cost:** 10 credits per slide, reserved upfront. Credits for slides that aren't produced are refunded automatically.
 </Info>
 
 Fills a library deck or chosen library templates from [`search_library`](/tools/search-library) with your material. This is the "Fill with AI" of the Decky PowerPoint add-in. See the [Slide library guide](/slide-library) for the whole flow.
@@ -67,7 +67,7 @@ If no slide can be filled at all, the job fails and all reserved credits are ref
 Returns a job object with `kind: "fill_templates"`, the same shape as [`create_deck`](/tools/create-deck#response). Use the `id` to poll [`get_deck_status`](/tools/get-deck-status). It also includes:
 
 <ResponseField name="credits_reserved" type="integer">
-  Credits held for the job: 1 × `max_slides` for a deck, 1 × the number of templates for `template_ids`.
+  Credits held for the job: 10 × `max_slides` for a deck, 10 × the number of templates for `template_ids`.
 </ResponseField>
 <ResponseField name="library" type="object">
   What the job fills: `deck_id` and `exclude_member_ids`, or `template_ids`.
@@ -89,7 +89,7 @@ Returns a job object with `kind: "fill_templates"`, the same shape as [`create_d
   "master_id": "650c4d7c-dd61-53f1-8f04-5dcb45b6d6cd",
   "master": "Graphite (Decky built-in)",
   "slides_requested": 12,
-  "credits_reserved": 12,
+  "credits_reserved": 120,
   "credits_charged": null,
   "progress": {},
   "error": null,
